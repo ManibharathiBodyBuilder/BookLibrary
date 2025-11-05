@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.com">
+<head>
+ <title>Home</title>
+<link rel="shortcut icon" type="image/jpg" href="image/books.jpg"/>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script type="text/javascript" th:src="@{/js/logout.js}"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+   <style>
+        #blink {
+            font-size: 20px;
+            font-weight: bold;
+            color:green;
+            transition: 0.5s;-
+        }
+    </style>
+    
+<script src="http://kit.fontawesome.com/0faddc1af8.js"
+	crossorigin="anonymous"></script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand text-white" href="#"><strong>BOOK STORE</strong></a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+					<li class="nav-item"><a class="nav-link active text-white"
+						aria-current="page" href="test"><strong>HOME</strong></a></li>
+					<li class="nav-item"><a class="nav-link text-white"
+						href="available_books"><strong>AVAILABLE BOOK</strong></a></li>
+					<li class="nav-item"><a class="nav-link text-white"
+						href="my_book"><strong>MY BOOK</strong></a></li>
+				</ul>
+					<a class="nav-link text-white" href="book_register"><strong>NEW BOOKREGISTER</strong></a>
+					<strong>
+					<input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" />
+					</strong>
+				</div>
+				<!-- <input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" /> -->
+				 <!-- <form class="form-logout" role="form">
+   <input type="submit" value="Logout" id="logout" class="btn btn-primary btn-lg">
+</form>  -->
+			</div>
+			
+	</nav>
+	<div class="container text-center my-3">
+		<h1>WELCOME TO THE ONLINE BOOK COLLECTIONS</h1>
+		<h6 style ="font-size:16px; color:black"><strong><i>Books are our best friends and the best way to know about the
+			world. Reading books helps us change our perspective of the world. We
+			have listened to a lot of stories from our elders, but with time,
+			most of our families became limited to only a father, a mother and a
+			child. Gone are those days when grandparents used to sleep beside
+			their grandchildren and narrate bedtime stories. Now it is all about
+			books and online stories. Whatever the case, books appear to be
+			companions for many. Learn how to write a paragraph on ‘books are our
+			best friends’ by going through the sample paragraphs in this article.</i></strong></h6><br>
+		<img src="/image/Ebook-3.jpg" width=800px, length=300px /></br><br>
+		<h2 >
+			<marquee >
+				<p style="color: red;">Public libraries play an important role
+					in supporting education and literacy. They provide countless
+					resources, such as educational materials, trainings, courses,
+					scientific publications, etc. to visitors. Public libraries provide
+					their services not only face-to-face, but some of them have also
+					integrated e-learning.</p>
+			</marquee>
+		</h2>
+	</div>
+	<h3 id="blink" class="text-center" style=font-size:30px;>WELCOME TO THE BOOK COLLECTION !!!</h3>
+	<script type="text/javascript">
+		var blink = document.getElementById('blink');
+		setInterval(function() {
+			blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
+		}, 1500);
+	</script>
+	
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+		integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+		crossorigin="anonymous"></script>
+
+</body>
+</html>
