@@ -1,0 +1,33 @@
+<!-- <button id="downloadBtn">Download File</button>
+<div id="qrcodeContainer" style="display:none;"></div>
+<a id="downloadLink" href="yourfile.zip" style="display:none;">Download Now</a>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("downloadBtn").addEventListener("click", async () => {
+    // Step 1: Create order
+    const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({amount: 50}) // ₹50
+    });
+    const order = await res.json();
+
+    // Step 2: Open Razorpay QR payment
+    var options = {
+        "key": "YOUR_KEY_ID",
+        "amount": order.amount,
+        "currency": "INR",
+        "name": "FreshApp Download",
+        "description": "Pay to download",
+        "order_id": order.id,
+        "handler": function (response){
+            // Step 3: Payment success -> show download link
+            document.getElementById("downloadLink").style.display = "block";
+        }
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+});
+</script>
+ -->
