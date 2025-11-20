@@ -36,11 +36,13 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active text-white"
-						aria-current="page" href="test"><strong>HOME</strong></a></li>
+						aria-current="page" href="testing"><strong>HOME</strong></a></li>
 					<li class="nav-item"><a class="nav-link text-white"
 						href="available_books"><strong>AVAILABLE BOOK</strong></a></li>
 					<li class="nav-item"><a class="nav-link text-white"
 						href="my_book"><strong>MY BOOK</strong></a></li>
+						<li class="nav-item"><a class="nav-link text-white"
+						href="dashboard"><strong>DASHBOARD</strong></a></li>
 				</ul>
 					<a class="nav-link text-white " href="book_register"><strong>NEW BOOKREGISTER</strong></a> 
 						<input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg"/>
@@ -57,17 +59,6 @@
 				<label for="BookName" class="form-label"><b>BookName<b></label>
 				<input type="text" class="form-control" name="BookName"
 					th:value="${book.BookName}">
-			</div>
-
-			<div class="mb-3">
-				<label for="BookAuthor" class="form-label"><b>BookAuthor<b></label>
-				<input type="text" class="form-control" name="BookAuthor"
-					th:value="${book.BookAuthor}">
-			</div>
-			<div class="mb-3">
-				<label for="BookLanch" class="form-label"><b>BookLanch<b></label>
-				<input type="text" class="form-control" name="BookLanch"
-					th:value="${book.BookLanch}">
 			</div>
 			<center>
 			<button type="submit" class="btn btn-primary"><strong>Submit</strong></button>

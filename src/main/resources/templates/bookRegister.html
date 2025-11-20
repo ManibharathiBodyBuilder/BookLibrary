@@ -2,14 +2,15 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.com">
 <head>
 <title>New Book Register</title>
-<link rel="shortcut icon" type="image/jpg" href="image/books.jpg"/>
+<link rel="shortcut icon" type="image/jpg" href="image/books.jpg" />
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript" th:src="@{/js/logout.js}"></script>
 <style>
 .container {
-  border-style: solid;
-  border-width: 5px;
-   background-color:  #b3ffb3;
+	border-style: solid;
+	border-width: 5px;
+	background-color: #b3ffb3;
 }
 </style>
 
@@ -24,7 +25,8 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
 		<div class="container-fluid text-center">
-			<a class="navbar-brand text-white" href="#"><strong>BOOK STORE</strong></a>
+			<a class="navbar-brand text-white" href="#"><strong>BOOK
+					STORE</strong></a>
 			<button class="navbar-toggler" type="button"
 				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -34,43 +36,50 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active text-white"
-						aria-current="page" href="test"><strong>HOME</strong></a></li>
-					<li class="nav-item"><a class="nav-link text-white"
-						href="available_student"><strong>AVAILABLE BOOK</strong></a></li>
-					<li class="nav-item"><a class="nav-link text-white" href="my_student"><strong>MY
-							BOOK</strong></a></li>
-				</ul>
-					<a class="nav-link text-white" href="student_register"><strong>NEW BOOK
-						REGISTER</strong></a>
-						<input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" />
-				</div>
+    th:href="@{/testing}"><strong>HOME</strong></a></li>
+<li class="nav-item"><a class="nav-link active text-white"
+    th:href="@{/available_books}"><strong>AVAILABLE BOOK</strong></a></li>
+<li class="nav-item"><a class="nav-link active text-white"
+    th:href="@{/my_book}"><strong>MY BOOK</strong></a></li>
+    <li class="nav-item"><a class="nav-link text-white"
+						href="dashboard"><strong>DashBoard</strong></a></li>
+</ul>
+
+<a class="nav-link text-white" th:href="@{/book_register}"><strong>NEW BOOK REGISTER</strong></a>
+ <input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" />
 			</div>
+		</div>
 	</nav>
-	<div  class="container my-5 p-5 text-center"  style="border:1px solid black;">
-	<h4 style ="font-size:38px; color:black" class="text-center"><strong>New BooK Register</strong></h4>
-		<form class="col-md-4 offset-md-4 my-4"th:action="@{/SaveBook}"method="post">
-			<div class="mb-3 ">
-				<label for="BookName" class="form-label"><b>BookName<b></label> 
-				<input type="text" class="form-control" name="BookName">
-					</div>
-			
+	
+	
+	
+	<div class="container my-5 p-5 text-center"
+		style="border: 1px solid black;">
+
+		<h4 style="font-size: 38px; color: black" class="text-center">
+			<strong>New Book Register</strong>
+		</h4>
+		<form class="col-md-4 offset-md-4 my-4" th:action="@{/SaveBook}"
+			method="post" enctype="multipart/form-data">
+
 			<div class="mb-3">
-				<label for="BookAuthor" class="form-label"><b>BookAuthor<b></label>
-				<input type="text" class="form-control"name="BookAuthor">
+				<label for="BookName" class="form-label"><b>Book Name</b></label> <input
+					type="text" class="form-control" name="BookName" required>
 			</div>
+
 			<div class="mb-3">
-				<label for="BookLanch" class="form-label"><b>BookLanch<b></label>
-				<input type="text" class="form-control"name="BookLanch">
+				<label for="BookDocument" class="form-label"><b>Upload
+						PDF</b></label> <input type="file" class="form-control" name="BookDocument"
+					accept=".pdf" required>
 			</div>
-			<div class="mb-3">
-			<input type="file" name="file">
-			<br>
+			<div>
+				<button type="submit" class="btn btn-primary">
+					<strong>Submit</strong>
+				</button>
 			</div>
-			<center>
-			<button type="submit" class="btn btn-primary"><strong>Submit</strong></button>
-			</center>
 		</form>
 	</div>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

@@ -34,7 +34,7 @@ function myFunction()
 {
 var un = document.forms["myForm"]["Uname"].value;
 var pw = document.forms["myForm"]["Pass"].value;
-if(un=="Manibharathi M" && pw==787898){
+if(un=="Manibharathi" && pw==787898){
 window.location.href="/Verified";
 alert("Hi,"+un+", Sign in Successfully")
 }

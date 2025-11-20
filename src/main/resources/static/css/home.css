@@ -1,0 +1,40 @@
+/* ✅ home.css */
+
+footer {
+  background-color: #f8f9fa; /* light grey */
+  color: #222;
+  padding: 40px 0;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+footer h6 {
+  font-weight: bold;
+  color: #111;
+}
+
+footer a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: #198754; /* Bootstrap green */
+  text-decoration: underline;
+}
+
+footer hr {
+  border-color: #ccc;
+}
+
+footer .social-icons a {
+  color: #222;
+  margin: 0 10px;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+footer .social-icons a:hover {
+  color: #198754;
+}

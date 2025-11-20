@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
@@ -13,48 +14,71 @@ public class BookEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column
-	private Long BookId;
+	private Long bookId;
 	@Column
-	private String BookName;
-	@Column
-	private String BookAuthor;
-	@Column
-	private String BookLanch;
-	
+	private String bookName;
+
+	 @Lob
+	    private byte[] bookDocument; // PDF stored as bytes
+		private String fileName;
+		
+		
+		@Column(name = "book_year")
+		private Integer bookYear;
+
+
+	public Integer getBookYear() {
+			return bookYear;
+		}
+
+		public void setBookYear(Integer bookYear) {
+			this.bookYear = bookYear;
+		}
+
 	public BookEntity() {
 		super();
-	}
-	public BookEntity(Long bookId, String bookName, String bookAuthor, String bookLanch) {
-		super();
-		BookId = bookId;
-		BookName = bookName;
-		BookAuthor = bookAuthor;
-		BookLanch =  bookLanch;
-	}
-	public Long getBookId() {
-		return BookId;
-	}
-	public void setBookId(Long bookId) {
-		BookId = bookId;
-	}
-	public String getBookName() {
-		return BookName;
-	}
-	public void setBookName(String bookName) {
-		BookName = bookName;
+		// TODO Auto-generated constructor stub
 	}
 
-	public String getBookAuthor() {
-		return BookAuthor;
+	public Long getBookId() {
+		return bookId;
 	}
-	public void setBookAuthor(String bookAuthor) {
-		BookAuthor = bookAuthor;
+
+	public void setBookId(Long bookId) {
+		this.bookId = bookId;
 	}
-	public String getBookLanch() {
-		return BookLanch;
+
+	public BookEntity(Long bookId, String bookName, byte[] bookDocument) {
+		super();
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.bookDocument = bookDocument;
 	}
-	public void setBookLanch(String bookLanch) {
-		BookLanch = bookLanch;
+
+	public String getBookName() {
+		return bookName;
 	}
+
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+
+
+	public byte[] getBookDocument() {
+		return bookDocument;
+	}
+
+	public void setBookDocument(byte[] bookDocument) {
+		this.bookDocument = bookDocument;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 
 }

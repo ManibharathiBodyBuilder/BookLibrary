@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Success</title>
+  <style>
+    body {font-family:Arial; text-align:center; padding:40px;}
+    a.btn {
+      background:#28a745; color:#fff; padding:12px 20px;
+      border-radius:8px; text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+  <h2>✅ Payment Successful!</h2>
+  <p>Your download is ready.</p>
+  <a class="btn"
+     th:href="@{'/getFile/' + ${bookId} + '?token=' + ${token}}">
+     Download Now
+  </a>
+</body>
+</html>

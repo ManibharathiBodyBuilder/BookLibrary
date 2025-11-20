@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Pay & Download</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body { font-family: Arial; background:#f4f4f4; text-align:center; padding:40px; }
+    .box { display:inline-block; background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+    button { padding:12px 24px; border:none; border-radius:8px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Pay ₹<span th:text="${amountRupee}">0.00</span> to download</h2>
+    <p>Book: <b th:text="${book.bookName}"></b></p>
+    <button id="payBtn">Pay Now</button>
+  </div>
+
+  <form id="verifyForm" th:action="@{/payment/verify}" method="post" style="display:none;">
+    <input type="hidden" name="razorpay_order_id" id="order_id">
+    <input type="hidden" name="razorpay_payment_id" id="payment_id">
+    <input type="hidden" name="razorpay_signature" id="signature">
+    <input type="hidden" name="bookId" th:value="${book.bookId}">
+  </form>
+
+  <script th:inline="javascript">
+    const options = {	
+    		key: /*[[${keyId}]]*/ "",
+    		amount: /*[[${amountPaise}]]*/ 0,
+      currency: "INR",
+      name: "Book Library",
+      description: "Download access",
+      order_id: /*[[${orderId}]]*/ "",
+      handler: function (response){
+        document.getElementById('order_id').value = response.razorpay_order_id;
+        document.getElementById('payment_id').value = response.razorpay_payment_id;
+        document.getElementById('signature').value = response.razorpay_signature;
+        document.getElementById('verifyForm').submit();
+      },
+      theme: { color: "#3399cc" }
+    };
+
+    document.getElementById('payBtn').onclick = function(){
+      const rzp = new Razorpay(options);
+      rzp.open();
+    };
+  </script>
+</body>
+</html>

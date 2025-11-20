@@ -13,50 +13,37 @@ public class MyBookEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column
-	private Long BookId;
+	private Long bookId;
 	@Column
-	private String BookName;
-	@Column
-	private String BookAuthor;
-	@Column
-	private String BookLanch;
+	private String bookName;
 	
-	public MyBookEntity(Long bookId, String bookName, String bookAuthor, String bookLanch) {
+	
+	public Long getBookId() {
+		return bookId;
+	}
+	public void setBookId(Long bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public MyBookEntity(Long bookId, String bookName) {
 		super();
-		BookId = bookId;
-		BookName = bookName;
-		BookAuthor = bookAuthor;
-		BookLanch = bookLanch;
+		this.bookId = bookId;
+		this.bookName = bookName;
 	}
 	public MyBookEntity() {
 		super();
-	}
-	public Long getBookId() {
-		return BookId;
-	}
-	public void setBookId(Long bookId) {
-		BookId = bookId;
-	}
-	public String getBookName() {
-		return BookName;
-	}
-	public void setBookName(String bookName) {
-		BookName = bookName;
-	}
-	public String getBookAuthor() {
-		return BookAuthor;
+		// TODO Auto-generated constructor stub
 	}
 	
-	public void setBookAuthor(String bookAuthor) {
-		BookAuthor = bookAuthor;
-	}
-	public String getBookLanch() {
-		return BookLanch;
-	}
-	public void setBookContent(String bookLanch) {
-		BookLanch = bookLanch;
-	}
+
 	
+
+
 
 
 
