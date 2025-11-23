@@ -33,3 +33,4 @@ build/
 .vscode/
 data/bookdb.mv.db
 data/bookdb.trace.db
+src/main/resources/keys/service-account.json
