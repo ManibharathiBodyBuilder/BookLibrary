@@ -8,6 +8,7 @@ import com.google.api.services.drive.model.FileList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-//@Component
+@Component
+@Profile("prod")
 public class GoogleDriveSyncJob {
 
 	@Autowired
@@ -37,7 +39,7 @@ public class GoogleDriveSyncJob {
 
     // 🕒 Runs every Monday at 08:00 AM
     //@Scheduled(cron = "0 0 8 ? * MON", zone = "Asia/Kolkata")
-   // @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 3000)
     public void syncIfEmpty() throws IOException {
     	
     	if (!syncEnabled) {

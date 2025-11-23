@@ -20,7 +20,7 @@ import java.util.Collections;
 
 
 @Configuration
-@Profile("drive")
+@Profile("prod")
 public class DriveConfig {
 
     @Value("${app.google.drive.service-account.key-path}")
