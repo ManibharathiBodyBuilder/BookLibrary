@@ -47,6 +47,34 @@
 	display: flex;
 	justify-content: center;
 }
+
+html, body {
+    overflow-x: hidden !important;
+}
+
+.row {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.footer-row {
+    margin: 0 !important; 
+    padding-top: 5px !important; /* small spacing */
+}
+.footer-line {
+    border: none !important;
+    height: 4px !important;
+    background-color: #8b5e34 !important; /* coffee */
+    opacity: 1 !important;
+    margin-bottom: 0 !important;
+}
+
+
+
+
+
+
+
+
 </style>
 
 
@@ -260,25 +288,27 @@
 	</div>
 
 
-	<hr class="mb-4 mt-4">
+<hr class="footer-line">
 
-	<div class="row align-items-center">
-		<div class="col-md-8 col-lg-8">
-			<p class="text-center text-md-start mb-0">
-				© 2025 <strong>BookLibrary Project</strong> | All Rights Reserved
-			</p>
-		</div>
+<div class="row align-items-center mt-2">
+    <div class="col-md-8 col-lg-8">
+        <p class="text-center text-md-start mb-0">
+            © 2025 <strong>BookLibrary Project</strong> | All Rights Reserved
+        </p>
+    </div>
 
-		<div class="col-md-4 col-lg-4 text-center text-md-end">
-			<a href="https://www.facebook.com/login/" class="text-dark me-3"><i
-				class="fab fa-facebook fa-lg"></i></a> <a
-				href="https://www.instagram.com/accounts/login/"
-				class="text-dark me-3"><i class="fab fa-instagram fa-lg"></i></a> <a
-				href="https://github.com/login" class="text-dark me-3"><i
-				class="fab fa-github fa-lg"></i></a> <a
-				href="https://www.linkedin.com/login" class="text-dark"><i
-				class="fab fa-linkedin fa-lg"></i></a>
-		</div>
+    <div class="col-md-4 col-lg-4 text-center text-md-end">
+        <a href="https://www.facebook.com/login/" class="text-dark me-3"><i
+            class="fab fa-facebook fa-lg"></i></a>
+        <a href="https://www.instagram.com/accounts/login/" class="text-dark me-3"><i
+            class="fab fa-instagram fa-lg"></i></a>
+        <a href="https://github.com/login" class="text-dark me-3"><i
+            class="fab fa-github fa-lg"></i></a>
+        <a href="https://www.linkedin.com/login" class="text-dark"><i
+            class="fab fa-linkedin fa-lg"></i></a>
+    </div>
+</div>
+
 
 
 		<script
