@@ -12,33 +12,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
 
 import java.io.FileInputStream;
 import java.util.Arrays;
-import java.util.Collections;
-
 
 @Configuration
 @Profile("prod")
 public class DriveConfig {
 
     @Value("${app.google.drive.service-account.key-path}")
-    private Resource serviceAccountJson;
-    
-
+    private String keyPath;
 
     @Bean
     public Drive googleDrive() throws Exception {
-        // Load service account credentials
-        GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountJson.getInputStream())
-                .createScoped(Arrays.asList(DriveScopes.DRIVE_READONLY)); // works in Java 8
 
-        // Explicit types (not 'var')
+        // Load service account from file system path
+        GoogleCredentials credentials =
+                GoogleCredentials.fromStream(new FileInputStream(keyPath))
+                        .createScoped(Arrays.asList(DriveScopes.DRIVE_READONLY));
+
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
-        // Build Drive service
         return new Drive.Builder(httpTransport, jsonFactory, new HttpCredentialsAdapter(credentials))
                 .setApplicationName("BookLibraryAutoSync")
                 .build();
