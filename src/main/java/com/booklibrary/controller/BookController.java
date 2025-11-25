@@ -132,8 +132,9 @@ public class BookController {
 	    model.addAttribute("startCount", startCount);
 	    model.addAttribute("endCount", endCount);
 
-	    return "booklist";
+	    return "available_books";  // ✅ FIXED
 	}
+
 
 	
 	
