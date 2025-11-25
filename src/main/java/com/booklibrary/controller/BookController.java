@@ -132,7 +132,7 @@ public class BookController {
 	    model.addAttribute("startCount", startCount);
 	    model.addAttribute("endCount", endCount);
 
-	    return "booklist";   // ✅ FINAL FIX
+	    return "booklist";  
 	}
 
 
