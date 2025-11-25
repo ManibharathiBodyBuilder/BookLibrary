@@ -1,6 +1,0 @@
-9840731484
-
-
-fa-solid fa-download
-fa-solid fa-eye
-fa-solid fa-trash
