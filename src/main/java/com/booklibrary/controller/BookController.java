@@ -132,13 +132,8 @@ public class BookController {
 	    model.addAttribute("startCount", startCount);
 	    model.addAttribute("endCount", endCount);
 
-	    return "available_books";  // ✅ FIXED
+	    return "booklist";   // ✅ FINAL FIX
 	}
-
-
-	
-	
-	
 
 
 	@PostMapping("/SaveBook")
