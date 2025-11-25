@@ -48,12 +48,12 @@ public class BookEntity {
 		this.bookId = bookId;
 	}
 
-	public BookEntity(Long bookId, String bookName, byte[] bookDocument) {
-		super();
-		this.bookId = bookId;
-		this.bookName = bookName;
-		this.bookDocument = bookDocument;
+	public BookEntity(Long bookId, String bookName, String fileName) {
+	    this.bookId = bookId;
+	    this.bookName = bookName;
+	    this.fileName = fileName;
 	}
+
 
 	public String getBookName() {
 		return bookName;

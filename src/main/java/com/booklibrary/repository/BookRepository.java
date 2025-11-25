@@ -2,6 +2,8 @@ package com.booklibrary.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +24,9 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
 	List<Object[]> countBooksByYear();
 
 
+
+	@Query("SELECT new com.booklibrary.entity.BookEntity(b.bookId, b.bookName, b.fileName) FROM BookEntity b")
+	Page<BookEntity> findLight(Pageable pageable);
 
 
 

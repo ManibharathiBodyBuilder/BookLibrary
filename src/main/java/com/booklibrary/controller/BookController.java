@@ -115,7 +115,9 @@ public class BookController {
 
 	    int size = 10;
 	    Pageable pageable = PageRequest.of(page, size);
-	    Page<BookEntity> bookPage = bookRepo.findAll(pageable);
+	   // Page<BookEntity> bookPage = bookRepo.findAll(pageable);
+	    Page<BookEntity> bookPage = bookRepo.findLight(pageable);
+
 
 	    if (bookPage.isEmpty()) {
 	        model.addAttribute("msg", "No books available right now!");
