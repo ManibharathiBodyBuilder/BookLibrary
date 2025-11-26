@@ -5,8 +5,6 @@ import com.booklibrary.repository.BookRepository;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,34 +18,30 @@ import java.util.List;
 @Profile("prod")
 public class GoogleDriveSyncJob {
 
-	@Autowired
     private final BookRepository bookRepository;
-	
-	@Autowired
     private final Drive drive;
 
     @Value("${app.google.drive.folder-id}")
     private String folderId;
-    
+
     @Value("${app.sync.enabled:true}")
     private boolean syncEnabled;
-    
+
+    // ✔ Constructor Injection (Spring recommended)
     public GoogleDriveSyncJob(BookRepository bookRepository, Drive drive) {
         this.bookRepository = bookRepository;
         this.drive = drive;
     }
 
-    // 🕒 Runs every Monday at 08:00 AM
-    //@Scheduled(cron = "0 0 8 ? * MON", zone = "Asia/Kolkata")
+    // Runs every 3 seconds (testing mode)
     @Scheduled(fixedRate = 3000)
     public void syncIfEmpty() throws IOException {
-    	
-    	if (!syncEnabled) {
-        System.out.println("🔕 Sync disabled in dev mode");
-        return;
-    }
-    	
-    	
+
+        if (!syncEnabled) {
+            System.out.println("🔕 Sync disabled in dev mode");
+            return;
+        }
+
         long count = bookRepository.count();
         if (count > 0) {
             System.out.println("✅ BookEntity table already has data, skipping sync.");
@@ -56,7 +50,7 @@ public class GoogleDriveSyncJob {
 
         System.out.println("⚙️ Table empty. Fetching books from Google Drive...");
 
-        // Step 1: Get all files from Drive folder
+        // Step 1: Query folder contents
         String query = String.format("'%s' in parents and trashed = false", folderId);
         FileList result = drive.files().list()
                 .setQ(query)
@@ -70,8 +64,9 @@ public class GoogleDriveSyncJob {
             return;
         }
 
-        // Step 2: For each file, download content and insert entry
+        // Step 2: Download and save each file
         for (File driveFile : files) {
+
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             drive.files().get(driveFile.getId()).executeMediaAndDownloadTo(outputStream);
 
@@ -88,4 +83,3 @@ public class GoogleDriveSyncJob {
         System.out.println("✅ Sync completed successfully.");
     }
 }
-

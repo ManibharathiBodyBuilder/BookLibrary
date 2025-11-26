@@ -1,9 +1,9 @@
 package com.booklibrary.cloudconfig;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.io.FileInputStream;
-import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @Profile("prod")
@@ -26,10 +26,9 @@ public class DriveConfig {
     @Bean
     public Drive googleDrive() throws Exception {
 
-        // Load service account from file system path
         GoogleCredentials credentials =
                 GoogleCredentials.fromStream(new FileInputStream(keyPath))
-                        .createScoped(Arrays.asList(DriveScopes.DRIVE_READONLY));
+                        .createScoped(Collections.singleton(DriveScopes.DRIVE));
 
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
