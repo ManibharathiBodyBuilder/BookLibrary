@@ -1,0 +1,17 @@
+java -jar C:/bfg/bfg-1.14.0.jar --delete-files gitpassword.txt
+
+
+Key: SPRING_PROFILES_ACTIVE
+Value: prod
+
+
+app.google.drive.service-account.key-path
+
+/etc/secrets/service-account.json
+
+
+
+
+app.google.drive.service-account.key-path
+
+/etc/secrets/service-account.json
