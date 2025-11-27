@@ -79,7 +79,7 @@ public class SecurityConfiguration {
 	@Bean
 	public org.springframework.security.core.userdetails.UserDetailsService UserDetailsService(BCryptPasswordEncoder encoder) {
 		UserDetails admin = User.withUsername("Manibharathi").password(encoder.encode("787898")).roles("ADMIN").build();
-		UserDetails user = User.withUsername("jeeva").password(encoder.encode("jaya@2026")).roles("USER").build();
+		UserDetails user = User.withUsername("demoUser").password(encoder.encode("demo@2025")).roles("USER").build();
 		return new InMemoryUserDetailsManager(user, admin);
 		
 	//	return new CustomUserDetailsService();
