@@ -45,7 +45,8 @@ public class ThumbnailService {
             PDFRenderer renderer = new PDFRenderer(document);
 
             // LOW MEMORY render
-            BufferedImage pageImage = renderer.renderImageWithDPI(0, 40); // 40 DPI only!!
+            BufferedImage pageImage = renderer.renderImage(0, 0.10f); 
+ // 40 DPI only!!
 
             // Resize Thumbnail
             int newW = coverWidth;
