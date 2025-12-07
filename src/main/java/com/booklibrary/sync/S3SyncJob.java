@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Component
-@Profile("prod")
+@Profile("dev")
 public class S3SyncJob {
 
     private final BookRepository bookRepository;
