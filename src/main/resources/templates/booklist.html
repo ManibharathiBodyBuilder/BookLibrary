@@ -152,61 +152,65 @@ html, body {
 		</div>
 		<h1 class="text-left mb-5">📚 Books List</h1>
 		<div class="row">
-			<div class="col-md-3 col-sm-6 mb-4" th:each="b : ${books}">
-				<div class="card shadow-sm  text-center">
+		<div class="col-md-3 col-sm-6 mb-4" th:each="b : ${books}">
+    <div class="card shadow-sm text-center">
+			<img th:src="${b.coverUrl != null ? b.coverUrl : '/image/pdf.jpg'}"
+     class="card-img-top"
+     style="
+        height: 280px; 
+        width: 100%; 
+        object-fit: contain; 
+        padding: 10px; 
+        background: white;
+        border-bottom: 1px solid #eee;
+     " />	
+			
+        <div class="card-body">
 
-					<img th:src="@{/image/pdf.jpg}" class="card-img-top"
-						style="height: 250px; object-fit: cover;">
+            <!-- BOOK NAME -->
+            <h5 th:text="${b.bookName}" class="card-title"></h5>
 
-					<div class="card-body">
+            <!-- ACTION ICONS -->
+            <div class="d-flex justify-content-center">
 
-						<!-- Book Name -->
-						<h5 th:text="${b.bookName}" class="card-title"></h5>
+                <!-- ADD TO MY BOOKS -->
+                <a th:href="@{/mylist/{id}(id=${b.bookId})}" class="mx-2" title="Add to My Books">
+                    <i class="fa-solid fa-bookmark" style="font-size: 22px; color: #ff9800;"></i>
+                </a>
 
-						<!-- ACTION ICONS -->
-						<div class="d-flex justify-content-center">
+                <!-- VIEW / READ -->
+                <a th:href="@{/readbookpage/{id}(id=${b.bookId})}" class="mx-2" title="Read Book Online" target="_blank">
+                    <i class="fa-solid fa-eye" style="font-size: 22px; color: #007bff;"></i>
+                </a>
 
+                <!-- DOWNLOAD -->
+                <a th:href="@{/payment/{id}(id=${b.bookId})}" class="mx-2" title="Pay & Download PDF" target="_blank">
+                    <i class="fa-solid fa-download" style="font-size: 22px; color: green;"></i>
+                </a>
 
-							<!-- ADD TO MY BOOKS -->
-							<a th:href="@{/mylist/{id}(id=${b.bookId})}" class="mx-2"
-								title="Add to My Books"> <i class="fa-solid fa-bookmark"
-								style="font-size: 22px; color: #ff9800;"></i>
-							</a>
+                <!-- ADMIN OPTIONS -->
+                <span sec:authorize="hasRole('ADMIN')">
 
-							<!-- VIEW (Open Online PDF) -->
-							<a th:href="@{/readbookpage/{id}(id=${b.bookId})}" class="mx-2"
-								title="Read Book Online" target="_blank"> <i class="fa-solid fa-eye"
-								style="font-size: 22px; color: #007bff;"></i>
-							</a>
+                    <!-- EDIT -->
+                    <a th:href="@{/editbook/{BookId}(BookId=${b.bookId})}" class="mx-2" title="Edit Book Details" target="_blank">
+                        <i class="fa-solid fa-pen-to-square" style="font-size: 22px; color: darkblue;"></i>
+                    </a>
 
-							<!-- DOWNLOAD / PAYMENT -->
-							<a th:href="@{/payment/{id}(id=${b.bookId})}" class="mx-2"
-								title="Pay & Download PDF" target="_blank"> <i class="fa-solid fa-download"
-								style="font-size: 22px; color: green;"></i>
-								
-							</a> <span sec:authorize="hasRole('ADMIN')"> <!-- EDIT --> <a
-								th:href="@{/editbook/{BookId}(BookId=${b.bookId})}" class="mx-2"
-								title="Edit Book Details" target="_blank"> <i
-									class="fa-solid fa-pen-to-square"
-									style="font-size: 22px; color: darkblue;"></i>
-							</a> <!-- DELETE --> <a
-								th:href="@{/deletebook/{BookId}(BookId=${b.bookId})}"
-								class="mx-2" title="Delete Book" target="_blank"> <i
-									class="fa-solid fa-trash" style="font-size: 22px; color: red;"></i>
-							</a>
+                    <!-- DELETE -->
+                    <a th:href="@{/deletebook/{BookId}(BookId=${b.bookId})}" class="mx-2" title="Delete Book" target="_blank">
+                        <i class="fa-solid fa-trash" style="font-size: 22px; color: red;"></i>
+                    </a>
 
-							</span>
+                </span>
 
+            </div>
 
+        </div>
 
-						</div>
-
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!-- <table class="table table-striped">
+    </div>
+</div>
+		
+					<!-- <table class="table table-striped">
 			<thead>
 				<tr class="table-dark">
 					<th scope="col">BookId</th>

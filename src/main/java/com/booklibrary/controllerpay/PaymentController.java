@@ -13,10 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 
 @Controller
 public class PaymentController {
@@ -126,7 +129,7 @@ public class PaymentController {
     }
 
     // secure download
-    @GetMapping("/download/{id}")
+    /*@GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable("id") Long bookId, @RequestParam("token") String token) {
         // verify token belongs to a PAID payment
         Optional<Payment> opt = paymentRepository.findByBookIdAndDownloadToken(bookId, token);
@@ -150,5 +153,50 @@ public class PaymentController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(file);
-    }
+    }*/
+    
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> download(@PathVariable("id") Long bookId, @RequestParam("token") String token) {
+
+        // 1️⃣ Verify token belongs to a PAID payment
+        Optional<Payment> opt = paymentRepository.findByBookIdAndDownloadToken(bookId, token);
+        if (!opt.isPresent() || !"PAID".equals(opt.get().getStatus())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // 2️⃣ Fetch book data
+        BookEntity book = bookRepository.findById(bookId).orElse(null);
+        if (book == null || book.getPdfUrl() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            URL url = new URL(book.getPdfUrl());
+            InputStream in = url.openStream();
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[1024];
+            int nRead;
+
+            while ((nRead = in.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+
+            buffer.flush();
+            byte[] pdfBytes = buffer.toByteArray();
+            in.close();
+
+            String fileName = (book.getFileName() != null) ? book.getFileName() : "book.pdf";
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error downloading file");
+        }
+
+    
+}
 }

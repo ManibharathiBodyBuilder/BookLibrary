@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.com" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <title>Home</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 <link rel="shortcut icon" type="image/jpg" href="image/books.jpg" />
 
 <meta charset="utf-8">
@@ -66,21 +68,24 @@ html, body {
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 					<li class="nav-item"><a class="nav-link active text-white"
-						aria-current="page" href="testing"><strong>HOME</strong></a></li>
+						aria-current="page" href="testing"><strong> <i class="ri-home-4-line"></i> HOME</strong></a></li>
 					<li class="nav-item"><a class="nav-link text-white"
-						href="available_books"><strong>AVAILABLE BOOK</strong></a></li>
+						href="available_books"><strong><i class="ri-book-2-line"></i> AVAILABLE BOOK</strong></a></li>
 					<li class="nav-item"><a class="nav-link text-white"
-						href="my_book"><strong>MY BOOK</strong></a></li>
+						href="my_book"><strong><i class="ri-bookmark-3-line"></i> MY BOOK</strong></a></li>
 						<li class="nav-item"><a class="nav-link text-white"
-						href="dashboard"><strong>DASHBOARD</strong></a></li>
+						href="dashboard"><strong><i class="ri-bar-chart-2-line"></i> DASHBOARD</strong></a></li>
 						<li class="nav-item"><a class="nav-link text-white"
-						href="history"><strong>HISTROY</strong></a></li>
+						href="history"><strong><i class="ri-time-line"></i> HISTROY</strong></a></li>
 				</ul>
 			 
-				<a class="nav-link text-white" href="book_register"><strong>NEW
-						BOOK REGISTER</strong></a> <strong> <input type="submit"
+				<a class="nav-link text-white" href="book_register"><strong><i class="ri-add-box-line" style="font-size:20px;"></i>NEW
+						BOOK REGISTER</strong></a>
+						
+						
+						 <strong> <input type="submit"
 					onClick="myFunction()" value="logout"
-					class="btn btn-primary btn-lg" />
+					class="btn btn-primary btn-lg"  />
 				</strong>
 			</div>
 			<!-- <input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" /> -->
@@ -91,7 +96,7 @@ html, body {
 
 	</nav>
 	<div class="container text-center my-3">
-		<h1>WELCOME TO THE ONLINE BOOK COLLECTIONS</h1>
+		<h1>WELCOME TO THE ONLINE BOOK COLLECTIONS</h1>		
 		<h6 style="font-size: 16px; color: black">
 			<strong><i>Books are our best friends and the best way
 					to know about the world. Reading books helps us change our

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title th:text="${category} + ' Books'">Category Books</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand text-white" href="#"><strong>BOOK
+					STORE</strong></a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			
+			<form class="row g-4 mb-4 mb-lg-0" th:action="@{/search}"
+					method="get">
+					<div class="col-md-6">
+						<input type="text" class="form-control" name="bookName"
+							placeholder="Book Name">
+					</div>
+					<div class="col-md-4">
+						<button class="btn btn-outline-success" type="submit">
+							<strong>Search</strong>
+						</button>
+					</div>
+				</form>
+				</div>
+			
+			</nav>
+
+<div class="container my-5">
+
+    <h2 class="mb-4">
+        📚 <span th:text="${category}"></span> Books
+    </h2>
+
+    <div class="row" th:if="${books.size() > 0}">
+        
+        <div class="col-md-3 col-sm-6 mb-4" th:each="b : ${books}">
+            <div class="card shadow-sm text-center">
+
+                <!-- Cover image -->
+                <img th:src="${b.coverUrl != null ? b.coverUrl : '/image/pdf.jpg'}"
+                     class="card-img-top"
+                     style="height: 250px; object-fit: contain; padding: 10px; background:white;" />
+
+                <div class="card-body">
+
+                    <!-- Book Name -->
+                    <h5 class="card-title" th:text="${b.bookName}"></h5>
+
+                    <!-- ACTION ICONS -->
+                    <div class="d-flex justify-content-center">
+
+                        <!-- Save to My Book -->
+                        <a th:href="@{/mylist/{id}(id=${b.bookId})}" class="mx-2" title="Save to My Books">
+                            <i class="fa-solid fa-bookmark" style="font-size:22px; color:#ff9800;"></i>
+                        </a>
+
+                        <!-- Read -->
+                        <a th:href="@{/readbookpage/{id}(id=${b.bookId})}" target="_blank" class="mx-2" title="Read Book">
+                            <i class="fa-solid fa-eye" style="font-size:22px; color:#007bff;"></i>
+                        </a>
+
+                        <!-- Download -->
+                        <a th:href="@{/payment/{id}(id=${b.bookId})}" target="_blank" class="mx-2" title="Download PDF">
+                            <i class="fa-solid fa-download" style="font-size:22px; color:green;"></i>
+                        </a>
+
+                         <!-- ADMIN OPTIONS -->
+                <span sec:authorize="hasRole('ADMIN')">
+
+                    <!-- EDIT -->
+                    <a th:href="@{/editbook/{BookId}(BookId=${b.bookId})}" class="mx-2" title="Edit Book Details" target="_blank">
+                        <i class="fa-solid fa-pen-to-square" style="font-size: 22px; color: darkblue;"></i>
+                    </a>
+
+                    <!-- DELETE -->
+                    <a th:href="@{/deletebook/{BookId}(BookId=${b.bookId})}" class="mx-2" title="Delete Book" target="_blank">
+                        <i class="fa-solid fa-trash" style="font-size: 22px; color: red;"></i>
+                    </a>
+
+                </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div th:if="${books.size() == 0}">
+        <p class="text-danger"><strong>No books found in this category.</strong></p>
+    </

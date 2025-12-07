@@ -36,23 +36,24 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active text-white"
-    th:href="@{/testing}"><strong>HOME</strong></a></li>
-<li class="nav-item"><a class="nav-link active text-white"
-    th:href="@{/available_books}"><strong>AVAILABLE BOOK</strong></a></li>
-<li class="nav-item"><a class="nav-link active text-white"
-    th:href="@{/my_book}"><strong>MY BOOK</strong></a></li>
-    <li class="nav-item"><a class="nav-link text-white"
+						th:href="@{/testing}"><strong>HOME</strong></a></li>
+					<li class="nav-item"><a class="nav-link active text-white"
+						th:href="@{/available_books}"><strong>AVAILABLE BOOK</strong></a></li>
+					<li class="nav-item"><a class="nav-link active text-white"
+						th:href="@{/my_book}"><strong>MY BOOK</strong></a></li>
+					<li class="nav-item"><a class="nav-link text-white"
 						href="dashboard"><strong>DashBoard</strong></a></li>
-</ul>
+				</ul>
 
-<a class="nav-link text-white" th:href="@{/book_register}"><strong>NEW BOOK REGISTER</strong></a>
- <input type="submit" onClick="myFunction()" value="logout" class="btn btn-primary btn-lg" />
+				<a class="nav-link text-white" th:href="@{/book_register}"><strong>NEW
+						BOOK REGISTER</strong></a> <input type="submit" onClick="myFunction()"
+					value="logout" class="btn btn-primary btn-lg" />
 			</div>
 		</div>
 	</nav>
-	
-	
-	
+
+
+
 	<div class="container my-5 p-5 text-center"
 		style="border: 1px solid black;">
 
@@ -63,15 +64,18 @@
 			method="post" enctype="multipart/form-data">
 
 			<div class="mb-3">
-				<label for="BookName" class="form-label"><b>Book Name</b></label> <input
-					type="text" class="form-control" name="BookName" required>
+				<label><b>Select Category</b></label> <select name="category"
+					class="form-control" required>
+					<option value="Computer books">Computer books</option>
+					<option value="Science books">Science books</option>
+					<option value="English books">English books</option>
+					<option value="Gods books">Gods books</option>
+					<option value="Tamil books">Tamil books</option>
+				</select> <label><b>Upload Multiple PDFs</b></label> <input type="file"
+					class="form-control" name="files" accept=".pdf" multiple required>
+
 			</div>
 
-			<div class="mb-3">
-				<label for="BookDocument" class="form-label"><b>Upload
-						PDF</b></label> <input type="file" class="form-control" name="BookDocument"
-					accept=".pdf" required>
-			</div>
 			<div>
 				<button type="submit" class="btn btn-primary">
 					<strong>Submit</strong>

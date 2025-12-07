@@ -15,13 +15,24 @@ import com.booklibrary.entity.BookEntity;
 public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpecificationExecutor<BookEntity> {
 
 	
+	boolean existsByFileName(String fileName);
+	
+	List<BookEntity> findByCategory(String category);
 
-	@Query("SELECT COUNT(DISTINCT b.bookName) FROM BookEntity b")
-	long findDistinctAuthorCount();
+
+	
+	// 1️⃣ Count total categories
+	@Query("SELECT COUNT(DISTINCT b.category) FROM BookEntity b")
+	long countDistinctCategories();
 
 
-	@Query("SELECT b.bookYear, COUNT(b) FROM BookEntity b GROUP BY b.bookYear")
-	List<Object[]> countBooksByYear();
+	
+	@Query("SELECT b.category, COUNT(b) FROM BookEntity b WHERE b.category IS NOT NULL AND b.category <> '' GROUP BY b.category ORDER BY COUNT(b) DESC")
+	        
+	    
+	List<Object[]> countBooksByCategory();
+
+
 
 
 

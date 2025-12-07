@@ -1,19 +1,20 @@
 package com.booklibrary.controller;
 
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 
-
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,10 +24,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-
-
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.booklibrary.dto.CategoryDTO;
 import com.booklibrary.entity.BookEntity;
 //import com.booklibrary.entity.FileModel; -------Is it for file_Repository Doc!!!
 import com.booklibrary.entity.MyBookEntity;
@@ -35,6 +36,7 @@ import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
 //import com.booklibrary.services.FileServices;  --------Is it for file_Repository Doc!!!
 import com.booklibrary.services.MyBookServices;
+import com.booklibrary.utils.PdfThumbnailGenerator;
 
 
 @Controller()
@@ -52,6 +54,14 @@ public class BookController {
 	
 	@Autowired
 	private BookHistoryService historyservice;
+
+	
+	@Autowired
+	private AmazonS3 s3;
+
+	@Value("${aws.s3.bucket}")
+	private String bucketName;
+
 	
 	/*@Autowired
 	private FileServices fileServices; */
@@ -99,25 +109,33 @@ public class BookController {
 	}
 	
 
-/*	@GetMapping("/available_books")
-	public String getAllBooks(Model model) {
-	    List<BookEntity> books = bookServices.GetAllBook();
+	@GetMapping("/available_books")
+	public String listCategories(Model model) {
 
-	    if (books == null || books.isEmpty()) {
-	        model.addAttribute("msg", "No books available right now!");
+	    // GET CATEGORY LIST WITH COUNT
+	    List<Object[]> categoryData = bookRepo.countBooksByCategory();
+	    List<CategoryDTO> categories = new ArrayList<>();
+
+	    for (Object[] row : categoryData) {
+	        String category = row[0] != null ? row[0].toString() : "Unknown";
+	        int count = Integer.parseInt(row[1].toString());
+	        categories.add(new CategoryDTO(category, count));
 	    }
 
-	    model.addAttribute("books", books);
-	    return "booklist";  // ✅ always return this view
-	}*/
-	@GetMapping("/available_books")
+	    model.addAttribute("categories", categories);
+
+	    return "categories";  // show category page
+	}
+
+	
+/*	@GetMapping("/available_books")
 	public String listBooks(@RequestParam(defaultValue = "0") int page, Model model) {
 
 	    int size = 10;
 	    Pageable pageable = PageRequest.of(page, size);
-	   // Page<BookEntity> bookPage = bookRepo.findAll(pageable);
-	    Page<BookEntity> bookPage = bookRepo.findLight(pageable);
 
+	    // FIXED: Load full BookEntity including coverUrl & pdfUrl
+	    Page<BookEntity> bookPage = bookRepo.findAll(pageable);
 
 	    if (bookPage.isEmpty()) {
 	        model.addAttribute("msg", "No books available right now!");
@@ -134,32 +152,132 @@ public class BookController {
 	    model.addAttribute("startCount", startCount);
 	    model.addAttribute("endCount", endCount);
 
-	    return "booklist";  
-	}
+	    return "booklist";
+	}*/
 
 
-	@PostMapping("/SaveBook")
-	public String addBook(@RequestParam("BookName") String bookName,                   
-	                      @RequestParam(value = "BookDocument", required = false) MultipartFile file) throws IOException {
+/*	@PostMapping("/SaveBook")
+	public String addBook(@RequestParam("BookName") String bookName,
+	                      @RequestParam("BookDocument") MultipartFile file) throws IOException {
 
 	    BookEntity book = new BookEntity();
 	    book.setBookName(bookName);
 
-	    // ✅ Optional file handling — avoids crash if no file uploaded
+	    // PDF upload
 	    if (file != null && !file.isEmpty()) {
 	        book.setBookDocument(file.getBytes());
 	        book.setFileName(file.getOriginalFilename());
-	    } else {
-	        book.setBookDocument(null);
-	        book.setFileName(null);
 	    }
 
-	    // ✅ Save safely
-	    bookServices.SaveBook(book);
+	    // 1️⃣ Save first (to get bookId)
+	    BookEntity saved = bookRepo.save(book);
 
-	    // ✅ Redirect to list page
+	    // 2️⃣ Generate thumbnail (only if PDF present)
+	    if (file != null && !file.isEmpty()) {
+	        String coverUrl = PdfThumbnailGenerator.generateThumbnail(file.getInputStream(), saved.getBookId());
+	        saved.setCoverUrl(coverUrl);
+	        bookRepo.save(saved);
+	    }
+
+	    return "redirect:/available_books";
+	}*/
+	
+	/*@PostMapping("/SaveBook")
+	public String addBook(
+	        @RequestParam("BookName") String bookName,
+	        @RequestParam("category") String category,
+	        @RequestParam("BookDocument") MultipartFile file) throws Exception {
+
+	    BookEntity book = new BookEntity();
+	    book.setBookName(bookName);
+	    book.setCategory(category);   // ⭐ Very important
+
+	    // 1️⃣ Save Book First (to get ID)
+	    BookEntity saved = bookRepo.save(book);
+
+	    // 2️⃣ Upload PDF to S3
+	    String pdfKey = "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
+	    ObjectMetadata pdfMeta = new ObjectMetadata();
+	    pdfMeta.setContentLength(file.getSize());
+	    pdfMeta.setContentType("application/pdf");
+
+	    s3.putObject(bucketName, pdfKey, file.getInputStream(), pdfMeta);
+	    String pdfUrl = s3.getUrl(bucketName, pdfKey).toString();
+	    saved.setPdfUrl(pdfUrl);
+
+	    // 3️⃣ Generate Thumbnail
+	    BufferedImage thumb = PdfThumbnailGenerator.generateThumbnail(file.getInputStream());
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    ImageIO.write(thumb, "jpg", baos);
+	    byte[] imageBytes = baos.toByteArray();
+
+	    // 4️⃣ Upload Thumbnail to S3
+	    String imageKey = "thumbnails/" + saved.getBookId() + ".jpg";
+	    ObjectMetadata imgMeta = new ObjectMetadata();
+	    imgMeta.setContentLength(imageBytes.length);
+	    imgMeta.setContentType("image/jpeg");
+
+	    s3.putObject(bucketName, imageKey, new ByteArrayInputStream(imageBytes), imgMeta);
+	    String imageUrl = s3.getUrl(bucketName, imageKey).toString();
+
+	    saved.setCoverUrl(imageUrl);
+
+	    // 5️⃣ Save updated URLs
+	    bookRepo.save(saved);
+
 	    return "redirect:/available_books";
 	}
+*/	
+	@PostMapping("/SaveBook")
+	public String addBookBulk(
+	        @RequestParam("category") String category,
+	        @RequestParam("files") MultipartFile[] files) throws Exception {
+
+	    for (MultipartFile file : files) {
+
+	        BookEntity book = new BookEntity();
+	        book.setBookName(file.getOriginalFilename());
+	        book.setCategory(category);
+
+	        // 1️⃣ Save Book to get ID
+	        BookEntity saved = bookRepo.save(book);
+
+	        // 2️⃣ Upload PDF to S3
+	        String pdfKey = "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
+	        ObjectMetadata pdfMeta = new ObjectMetadata();
+	        pdfMeta.setContentLength(file.getSize());
+	        pdfMeta.setContentType("application/pdf");
+
+	        s3.putObject(bucketName, pdfKey, file.getInputStream(), pdfMeta);
+	        String pdfUrl = s3.getUrl(bucketName, pdfKey).toString();
+	        saved.setPdfUrl(pdfUrl);
+
+	        // 3️⃣ Generate Thumbnail & Upload
+	        BufferedImage thumb = PdfThumbnailGenerator.generateThumbnail(file.getInputStream());
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        ImageIO.write(thumb, "jpg", baos);
+	        byte[] imageBytes = baos.toByteArray();
+
+	        String imageKey = "thumbnails/" + saved.getBookId() + ".jpg";
+	        ObjectMetadata imgMeta = new ObjectMetadata();
+	        imgMeta.setContentLength(imageBytes.length);
+	        imgMeta.setContentType("image/jpeg");
+
+	        s3.putObject(bucketName, imageKey, new ByteArrayInputStream(imageBytes), imgMeta);
+	        String imageUrl = s3.getUrl(bucketName, imageKey).toString();
+
+	        // 4️⃣ Save URL updates
+	        saved.setCoverUrl(imageUrl);
+	        bookRepo.save(saved);
+	    }
+
+	    return "redirect:/available_books";
+	}
+
+
+
+
+
 
 
 	//----------Is it for file_Repository Doc!!!
@@ -231,7 +349,8 @@ public class BookController {
 	}
 	
 	@GetMapping("/getFile/{id}")
-	public ResponseEntity<byte[]> getFile(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getFile(@PathVariable("id") Long id) {
+
 	    // record download history
 	    try {
 	        historyservice.downloadBook(id.intValue());
@@ -240,15 +359,16 @@ public class BookController {
 	    }
 
 	    BookEntity book = bookServices.getBookById(id);
-	    if (book == null || book.getBookDocument() == null) {
+	    if (book == null || book.getPdfUrl() == null) {
 	        return ResponseEntity.notFound().build();
 	    }
 
-	    return ResponseEntity.ok()
-	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + book.getFileName() + "\"")
-	            .contentType(MediaType.APPLICATION_PDF)
-	            .body(book.getBookDocument());
+	    //  NEW: Redirect user to S3 PDF URL
+	    return ResponseEntity.status(HttpStatus.FOUND)
+	            .header(HttpHeaders.LOCATION, book.getPdfUrl())
+	            .build();
 	}
+
 
 
 
@@ -286,42 +406,67 @@ public class BookController {
 	    model.addAttribute("endCount", results.size());
 	    model.addAttribute("totalBooks", results.size());
 
-	    return "booklist";
+	    return "books-by-category";
 	}
 
 
 	
-	 @GetMapping("/dashboard")
-	    public String dashboard(Model model) {
-	        long totalBooks = bookRepo.count();
-	        long totalAuthors = bookRepo.findDistinctAuthorCount();
-	        List<Object[]> booksByYear = bookRepo.countBooksByYear();
+	/*@GetMapping("/dashboard")
+	public String dashboard(Model model) {
 
-	        model.addAttribute("totalBooks", totalBooks);
-	        model.addAttribute("totalAuthors", totalAuthors);
-	        model.addAttribute("booksByYear", booksByYear);
+	    long totalBooks = bookRepo.count();
+	    long totalCategories = bookRepo.countDistinctCategories();
+	    List<Object[]> booksByCategory = bookRepo.countBooksByCategory();
 
-	        return "dashboard";
+	    model.addAttribute("totalBooks", totalBooks);
+	    model.addAttribute("totalCategories", totalCategories);
+	    model.addAttribute("booksByCategory", booksByCategory);
+
+	    return "dashboard";
+	}*/
+	
+	@GetMapping("/dashboard")
+	public String dashboard(Model model) {
+
+	    long totalBooks = bookRepo.count();
+	    long totalCategories = bookRepo.countDistinctCategories();
+	    List<Object[]> booksByCategory = bookRepo.countBooksByCategory();
+
+	    // Convert category & count into separate arrays
+	    List<String> categoryNames = new ArrayList<>();
+	    List<Long> categoryCounts = new ArrayList<>();
+
+	    for (Object[] row : booksByCategory) {
+	        categoryNames.add((String) row[0]);
+	        categoryCounts.add((Long) row[1]);
 	    }
+
+	    model.addAttribute("totalBooks", totalBooks);
+	    model.addAttribute("totalCategories", totalCategories);
+	    model.addAttribute("categoryNames", categoryNames);
+	    model.addAttribute("categoryCounts", categoryCounts);
+
+	    return "dashboard";
+	}
+
+
+
 	 
 	 @GetMapping("/readbook/{id}")
-	 public ResponseEntity<byte[]> readBook(@PathVariable Long id) {
+	 public ResponseEntity<?> readBook(@PathVariable Long id) {
 	     BookEntity book = bookRepo.findById(id)
 	             .orElseThrow(() -> new RuntimeException("Book not found"));
 
-	     byte[] fileData = book.getBookDocument();
-	     if (fileData == null) {
-	         throw new RuntimeException("No document found for this book");
+	     if (book.getPdfUrl() == null) {
+	         throw new RuntimeException("No PDF URL found for this book");
 	     }
 
-	     HttpHeaders headers = new HttpHeaders();
-	     headers.setContentType(MediaType.APPLICATION_PDF);
-	     headers.setContentDisposition(ContentDisposition.inline()
-	             .filename(book.getFileName())
-	             .build());
-
-	     return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
+	     // Inline open PDF from S3
+	     return ResponseEntity.status(HttpStatus.FOUND)
+	             .header(HttpHeaders.LOCATION, book.getPdfUrl())
+	             .build();
 	 }
+
 
 	 
 	 

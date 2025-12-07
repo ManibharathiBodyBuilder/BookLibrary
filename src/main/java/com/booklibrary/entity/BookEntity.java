@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
@@ -17,9 +16,40 @@ public class BookEntity {
 	private Long bookId;
 	@Column
 	private String bookName;
+	@Column(name = "category")
+	private String category;
 
-	 @Lob
-	    private byte[] bookDocument; // PDF stored as bytes
+	
+	
+	 public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	@Column(name = "cover_url")
+	    private String coverUrl;
+
+	    // constructors, getters, setters...
+	    public String getCoverUrl() { return coverUrl; }
+	    public void setCoverUrl(String coverUrl) { this.coverUrl = coverUrl; }
+	
+	@Column(name = "pdf_url")
+	private String pdfUrl;
+	
+	public String getPdfUrl() {
+	    return pdfUrl;
+	}
+
+	public void setPdfUrl(String pdfUrl) {
+	    this.pdfUrl = pdfUrl;
+	}
+
+
+
+	/* @Lob
+	    private byte[] bookDocument;*/ // PDF stored as bytes
 		private String fileName;
 		
 		
@@ -64,13 +94,13 @@ public class BookEntity {
 	}
 
 
-	public byte[] getBookDocument() {
+/*	public byte[] getBookDocument() {
 		return bookDocument;
 	}
 
 	public void setBookDocument(byte[] bookDocument) {
 		this.bookDocument = bookDocument;
-	}
+	}*/
 
 	public String getFileName() {
 		return fileName;
