@@ -1,6 +1,9 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Register</title></head>
+<head><title>Register</title>
+<th:block th:replace="fragments/head :: head"></th:block>
+
+</head>
 <body>
 <h2>Register</h2>
 <div th:if="${error}" th:text="${error}" style="color:red"></div>

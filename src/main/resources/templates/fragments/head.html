@@ -1,1 +1,17 @@
-<meta name="google-site-verification" content="mML1YNL2HNAbRYXlaTaALlvJ1ZBFjPLZnuvy6O85io0" />
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <!-- common meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google verification -->
+    <meta name="google-site-verification" content="mML1YNL2HNAbRYXlaTaALlvJ1ZBFjPLZnuvy6O85io0" />
+    
+
+    <!-- CSS links -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <title th:replace="${title}">OnlineBookLibrary</title>
+</head>
+</html>
