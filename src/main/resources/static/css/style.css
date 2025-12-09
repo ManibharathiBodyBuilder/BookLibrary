@@ -5,16 +5,7 @@ body {
     padding: 0;
 }
 
-/* Main container box */
-div {
-    width: 400px;
-    margin: 40px auto; /* center horizontally */
-    padding: 30px;
-    background: #ffffff; /* white clean box */
-    border-radius: 20px;
-    border: 2px solid #ccc;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-}
+
 
 /* Heading */
 h2 {
