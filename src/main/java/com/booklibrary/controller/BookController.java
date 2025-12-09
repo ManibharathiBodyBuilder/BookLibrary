@@ -1,7 +1,9 @@
 package com.booklibrary.controller;
 
+import java.net.URL;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +12,9 @@ import javax.imageio.ImageIO;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -452,7 +452,7 @@ public class BookController {
 
 
 	 
-	 @GetMapping("/readbook/{id}")
+/*	 @GetMapping("/readbook/{id}")
 	 public ResponseEntity<?> readBook(@PathVariable Long id) {
 	     BookEntity book = bookRepo.findById(id)
 	             .orElseThrow(() -> new RuntimeException("Book not found"));
@@ -465,7 +465,36 @@ public class BookController {
 	     return ResponseEntity.status(HttpStatus.FOUND)
 	             .header(HttpHeaders.LOCATION, book.getPdfUrl())
 	             .build();
-	 }
+	 }*/
+	
+	
+	@GetMapping("/api/pdf/{id}")
+	public ResponseEntity<byte[]> getPdf(@PathVariable Long id) throws Exception {
+
+	    BookEntity book = bookRepo.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Book not found"));
+
+	    String pdfUrl = book.getPdfUrl();
+	    if (pdfUrl == null) {
+	        throw new RuntimeException("PDF URL missing");
+	    }
+
+	    URL url = new URL(pdfUrl);
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+	    try (InputStream is = url.openStream()) {
+	        byte[] buffer = new byte[8192];
+	        int bytesRead;
+	        while ((bytesRead = is.read(buffer)) != -1) {
+	            baos.write(buffer, 0, bytesRead);
+	        }
+	    }
+
+	    return ResponseEntity.ok()
+	            .contentType(MediaType.APPLICATION_PDF)
+	            .body(baos.toByteArray());
+	}
+
 
 
 	 
