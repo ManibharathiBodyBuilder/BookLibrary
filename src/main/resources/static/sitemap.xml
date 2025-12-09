@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Home page -->
+    <url>
+        <loc>https://olinebooklibrary.onrender.com/</loc>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Available books page (public list) -->
+    <url>
+        <loc>https://olinebooklibrary.onrender.com/available_books</loc>
+        <priority>0.9</priority>
+    </url>
+
+</urlset>

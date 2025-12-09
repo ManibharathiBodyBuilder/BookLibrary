@@ -43,16 +43,25 @@ public class AuthController {
         }
     }
 
-    // login mapping (login page)
+    
+ /*   @GetMapping("/")
+    public String homeRedirect() {
+        return "redirect:/login";
+    }*/
+    
+    
+ // HOME PAGE (public)
+    @GetMapping("/")
+    public String homePage() {
+        return "testing";   // your home page
+    }
+
+    // LOGIN PAGE (works normally)
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
-    
-    @GetMapping("/")
-    public String homeRedirect() {
-        return "redirect:/login";
-    }
+
 
 
 
