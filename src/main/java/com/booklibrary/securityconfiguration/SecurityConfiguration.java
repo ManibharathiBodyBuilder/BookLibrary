@@ -33,7 +33,7 @@ public class SecurityConfiguration {
 	            .antMatchers("/login","/register","/forgot-password","/reset-password").permitAll()
 	            .antMatchers("/readbook/**","/readbookpage/**").permitAll()
 	            .antMatchers("/h2-console/**").permitAll()
-	            .antMatchers("/", "/testing").permitAll()
+	            .antMatchers("/testing").permitAll()    
 	            .antMatchers("/deletebook/**").authenticated()
 	            .antMatchers(HttpMethod.GET, "/book_register").hasRole("ADMIN")
 	            .anyRequest().authenticated()   // 🔥 MUST BE authenticated, not permitAll
