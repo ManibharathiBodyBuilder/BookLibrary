@@ -1,6 +1,7 @@
 package com.booklibrary.controller;
 
 import java.net.URL;
+import java.net.URLConnection;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -480,9 +481,12 @@ public class BookController {
 	    }
 
 	    URL url = new URL(pdfUrl);
+	    URLConnection connection = url.openConnection();
+	    connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-	    try (InputStream is = url.openStream()) {
+	    try (InputStream is = connection.getInputStream()) {
 	        byte[] buffer = new byte[8192];
 	        int bytesRead;
 	        while ((bytesRead = is.read(buffer)) != -1) {
@@ -493,6 +497,7 @@ public class BookController {
 	    return ResponseEntity.ok()
 	            .contentType(MediaType.APPLICATION_PDF)
 	            .body(baos.toByteArray());
+
 	}
 
 
