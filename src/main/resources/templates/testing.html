@@ -2,13 +2,12 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.com" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <th:block th:replace="fragments/head :: head"></th:block>
-<title>Online Book Library | Read, Search & Manage Books Online</title>
-
-    <meta name="description" 
-          content="OnlineBookLibrary is a modern digital library where you can read books online, browse categories, track your reading history, register books, and view dashboards. Free and easy access.">
-
-    <meta name="keywords"
-          content="online book library, read books online, book categories, tamil books, digital library, free books, virtual library">
+<title>Online Book Library – Read Books Online Free | Tamil, PDF, Science, Computer</title>
+   <meta name="description"
+      content="OnlineBookLibrary is a free digital library to read books online. Browse Tamil books, science, computer, storybooks and more. Updated daily with new collections. No login required to read.">
+   <meta name="keywords"
+      content="online library, tamil books, read books free, pdf library, digital books, computer books, science books">
+   
 
 <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 
@@ -55,6 +54,21 @@ html, body {
     opacity: 1 !important;
     margin-bottom: 0 !important;
 }
+
+.blink-msg {
+    color: #00ff90;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+    animation: blink 1s infinite;
+}
+
+
+
+@keyframes blink { 50% { opacity: 0; } }
+
+
 
 </style>
 
@@ -117,6 +131,8 @@ html, body {
 					how to write a paragraph on ‘books are our best friends’ by going
 					through the sample paragraphs in this article.</i></strong>
 		</h6>
+		
+		
 		<br> <img src="/image/Ebook-3.jpg" width=800px, length=300px /></br>
 		<br>
 		<h2>
@@ -130,6 +146,20 @@ html, body {
 			</marquee>
 		</h2>
 	</div>
+	<div th:if="${newBookMessage}" class="blink-msg">
+    <p th:text="${newBookMessage}"></p>
+</div>
+<div th:if="${todayBooks != null and todayBooks.size() > 0}"
+     style="padding:15px; background:#fff3cd; border-left:6px solid #ff9800;
+            color:#d35400; font-size:22px; font-weight:bold;
+            animation: blink 1s infinite; text-align:center; margin-top:20px;">
+
+    🔥 Today New Collection Added!
+    <span th:text="${todayBooks.size()}"></span> book(s) added just now 🎉
+</div>
+
+
+
 	<h3 id="blink" class="text-center" style="font-size: 30px;">WELCOME
 		TO THE BOOK COLLECTION !!!</h3>
 	<script type="text/javascript">
