@@ -1,66 +1,89 @@
 <!doctype html>
 <html lang="en" xmlns:th="https://www.thymeleaf.com" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<th:block th:replace="fragments/head :: head"></th:block>
-<title>Online Book Library | Read, Search & Manage Books Online</title>
 
-    <meta name="description" 
-          content="OnlineBookLibrary is a modern digital library where you can read books online, browse categories, track your reading history, register books, and view dashboards. Free and easy access.">
+    <!-- ======= BASIC SEO ======= -->
+    <title>Online Book Library – Read Free Tamil & PDF Books | Digital Library Collection</title>
 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Online Book Library is a free digital library to read Tamil books, PDF novels, study materials, stories and category-wise collections online. Fast loading, mobile-friendly and easy reading experience.">
     <meta name="keywords"
-          content="online book library, read books online, book categories, tamil books, digital library, free books, virtual library">
+          content="online book library, tamil books, read pdf online, free books, tamil novels, digital library, study materials, ebook library, pdf collections">
 
-<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <meta name="author" content="Online Book Library Team">
 
-<link rel="shortcut icon" type="image/jpg" href="image/books.jpg" />
+    <!-- ======= INDEXING ======= -->
+    <meta name="robots" content="index, follow">
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- ======= SOCIAL MEDIA (OPEN GRAPH) ======= -->
+    <meta property="og:title" content="Online Book Library – Read Free Tamil & PDF Books">
+    <meta property="og:description" content="Access 100+ Tamil books & PDF collections for free. Read instantly from mobile or laptop.">
+    <meta property="og:image" content="https://olinebooklibrary.onrender.com/image/book.jpg">
+    <meta property="og:url" content="https://olinebooklibrary.onrender.com/">
+    <meta property="og:type" content="website">
 
-<script type="text/javascript" th:src="@{/js/logout.js}"></script>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-	crossorigin="anonymous">
-<meta charset="UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="style.css" />
-<link rel="stylesheet" th:href="@{/css/home.css}">
+    <!-- ======= ICONS & MOBILE OPTIMIZATION ======= -->
+    <link rel="icon" type="image/png" href="/image/book.jpg">
 
-<style>
-#blink {
-	font-size: 20px;
-	font-weight: bold;
-	color: green;
-	transition: 0.5s;
-}
-html, body {
-    overflow-x: hidden !important;
-}
+    <!-- ======= SITEMAP & CANONICAL ======= -->
+    <link rel="canonical" href="https://olinebooklibrary.onrender.com/">
+    <link rel="sitemap" type="application/xml" title="Sitemap"
+          href="https://olinebooklibrary.onrender.com/sitemap.xml">
 
-.row {
-    margin-left: -15px;
-    margin-right: -15px;
-}
-.footer-row {
-    margin: 0 !important; 
-    padding-top: 5px !important; /* small spacing */
-}
-.footer-line {
-    border: none !important;
-    height: 4px !important;
-    background-color: #8b5e34 !important; /* coffee */
-    opacity: 1 !important;
-    margin-bottom: 0 !important;
-}
+    <!-- ======= STRUCTURED DATA (JSON-LD) ======= -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Library",
+      "name": "Online Book Library",
+      "url": "https://olinebooklibrary.onrender.com/",
+      "image": "https://olinebooklibrary.onrender.com/image/books.jpg",
+      "description": "Read Tamil books, PDF study materials, stories, novels and digital collections online for free.",
+      "sameAs": [
+        "https://github.com/ManibharathiBodyBuilder",
+        "https://www.facebook.com/login/",
+        "https://www.instagram.com/accounts/login/"
+      ]
+    }
+    </script>
 
-</style>
+    <!-- Shared Fragment (Your existing head imports) -->
+    <th:block th:replace="fragments/head :: head"></th:block>
 
-<script src="http://kit.fontawesome.com/0faddc1af8.js"
-	crossorigin="anonymous"></script>
+    <!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/logout.js}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+
+    <!-- Inline Page Styles -->
+    <style>
+        #blink {
+            font-size: 20px;
+            font-weight: bold;
+            color: green;
+            transition: 0.5s;
+        }
+        html, body { overflow-x:hidden !important; }
+
+        .footer-row { margin: 0 !important; padding-top: 5px !important; }
+        .footer-line {
+            border: none !important;
+            height: 4px !important;
+            background-color: #8b5e34 !important;
+            opacity: 1 !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+
 </head>
+
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
 		<div class="container-fluid">
