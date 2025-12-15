@@ -1,6 +1,7 @@
 package com.booklibrary.controller;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -19,11 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -529,6 +532,33 @@ public class BookController {
 
 	     return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
 	 }*/
+	 
+	 @PostMapping("/addBook")
+	 public String addBook(@ModelAttribute BookEntity book,
+	                       RedirectAttributes redirectAttributes) {
+
+	     bookRepo.save(book);
+
+	     // Flash message (one-time)
+	     redirectAttributes.addFlashAttribute("newBookMessage",
+	             "🎉 New book added successfully!");
+
+	     return "redirect:/testing";
+	 }
+	 
+	
+	 @GetMapping("/testing")
+	 public String GetData(Model model) {
+
+	     LocalDate today = LocalDate.now();
+
+	     // Get today's books
+	     List<BookEntity> todayBooks = bookRepo.findByCreatedDate(today);
+
+	     model.addAttribute("todayBooks", todayBooks);
+
+	     return "testing";
+	 }
 
 
 

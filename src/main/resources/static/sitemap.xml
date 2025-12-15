@@ -3,13 +3,13 @@
 
     <!-- Home page -->
     <url>
-        <loc>https://olinebooklibrary.onrender.com/</loc>
+        <loc>https://onlinebooklibrary.onrender.com/</loc>
         <priority>1.0</priority>
     </url>
 
     <!-- Available books page (public list) -->
     <url>
-        <loc>https://olinebooklibrary.onrender.com/available_books</loc>
+        <loc>https://onlinebooklibrary.onrender.com/available_books</loc>
         <priority>0.9</priority>
     </url>
 
