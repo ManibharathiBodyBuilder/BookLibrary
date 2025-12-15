@@ -153,6 +153,15 @@
 			</marquee>
 		</h2>
 	</div>
+	<div th:if="${newBookMessage}" class="blink-msg">
+		<p th:text="${newBookMessage}"></p>
+	</div>
+	<div th:if="${todayBooks != null and todayBooks.size() > 0}"
+		style="padding: 15px; background: #fff3cd; border-left: 6px solid #ff9800; color: #d35400; font-size: 22px; font-weight: bold; animation: blink 1s infinite; text-align: center; margin-top: 20px;">
+
+		🔥 Today New Collection Added! <span th:text="${todayBooks.size()}"></span>
+		book(s) added just now 🎉
+	</div>
 	<h3 id="blink" class="text-center" style="font-size: 30px;">WELCOME
 		TO THE BOOK COLLECTION !!!</h3>
 	<script type="text/javascript">
