@@ -1,10 +1,13 @@
 package com.booklibrary.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
@@ -18,6 +21,25 @@ public class BookEntity {
 	private String bookName;
 	@Column(name = "category")
 	private String category;
+
+	
+private LocalDate createdDate;
+	
+	
+	@PrePersist
+	protected void onCreate() {
+	    this.createdDate = LocalDate.now();
+	}
+	
+	public LocalDate getCreatedDate() {
+	    return createdDate;
+	}
+
+	public void setCreatedDate(LocalDate createdDate) {
+	    this.createdDate = createdDate;
+	}
+
+
 
 	
 	
