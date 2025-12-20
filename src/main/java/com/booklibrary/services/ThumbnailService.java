@@ -3,6 +3,7 @@ package com.booklibrary.services;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,7 @@ public class ThumbnailService {
 
             PDFRenderer renderer = new PDFRenderer(document);
 
-            // LOW MEMORY render
-            BufferedImage pageImage = renderer.renderImage(0, 0.10f); 
- // 40 DPI only!!
+			BufferedImage pageImage = renderer.renderImageWithDPI(0, 144, ImageType.RGB);
 
             // Resize Thumbnail
             int newW = coverWidth;
