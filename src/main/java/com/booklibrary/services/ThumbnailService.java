@@ -45,7 +45,8 @@ public class ThumbnailService {
 
             PDFRenderer renderer = new PDFRenderer(document);
 
-            BufferedImage pageImage = renderer.renderImage(0, 0.10f, ImageType.RGB);
+            BufferedImage pageImage = renderer.renderImageWithDPI(0, 72, ImageType.RGB);
+
 
 
             // Resize Thumbnail
