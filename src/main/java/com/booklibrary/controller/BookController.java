@@ -547,7 +547,7 @@ public class BookController {
 	 }
 	 
 	
-	 @GetMapping("/testing")
+/*	 @GetMapping("/testing")
 	 public String GetData(Model model) {
 
 	     LocalDate today = LocalDate.now();
@@ -558,7 +558,7 @@ public class BookController {
 	     model.addAttribute("todayBooks", todayBooks);
 
 	     return "testing";
-	 }
+	 }*/
 
 
 
