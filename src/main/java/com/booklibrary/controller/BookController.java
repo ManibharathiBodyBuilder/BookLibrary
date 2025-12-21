@@ -39,6 +39,7 @@ import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
 //import com.booklibrary.services.FileServices;  --------Is it for file_Repository Doc!!!
 import com.booklibrary.services.MyBookServices;
+import com.booklibrary.services.ThumbnailService;
 import com.booklibrary.utils.PdfThumbnailGenerator;
 
 
@@ -64,6 +65,10 @@ public class BookController {
 
 	@Value("${aws.s3.bucket}")
 	private String bucketName;
+	
+	@Autowired
+	private ThumbnailService thumbnailService;
+
 
 	
 	/*@Autowired
@@ -159,79 +164,8 @@ public class BookController {
 	}*/
 
 
-/*	@PostMapping("/SaveBook")
-	public String addBook(@RequestParam("BookName") String bookName,
-	                      @RequestParam("BookDocument") MultipartFile file) throws IOException {
 
-	    BookEntity book = new BookEntity();
-	    book.setBookName(bookName);
-
-	    // PDF upload
-	    if (file != null && !file.isEmpty()) {
-	        book.setBookDocument(file.getBytes());
-	        book.setFileName(file.getOriginalFilename());
-	    }
-
-	    // 1️⃣ Save first (to get bookId)
-	    BookEntity saved = bookRepo.save(book);
-
-	    // 2️⃣ Generate thumbnail (only if PDF present)
-	    if (file != null && !file.isEmpty()) {
-	        String coverUrl = PdfThumbnailGenerator.generateThumbnail(file.getInputStream(), saved.getBookId());
-	        saved.setCoverUrl(coverUrl);
-	        bookRepo.save(saved);
-	    }
-
-	    return "redirect:/available_books";
-	}*/
-	
 	/*@PostMapping("/SaveBook")
-	public String addBook(
-	        @RequestParam("BookName") String bookName,
-	        @RequestParam("category") String category,
-	        @RequestParam("BookDocument") MultipartFile file) throws Exception {
-
-	    BookEntity book = new BookEntity();
-	    book.setBookName(bookName);
-	    book.setCategory(category);   // ⭐ Very important
-
-	    // 1️⃣ Save Book First (to get ID)
-	    BookEntity saved = bookRepo.save(book);
-
-	    // 2️⃣ Upload PDF to S3
-	    String pdfKey = "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
-	    ObjectMetadata pdfMeta = new ObjectMetadata();
-	    pdfMeta.setContentLength(file.getSize());
-	    pdfMeta.setContentType("application/pdf");
-
-	    s3.putObject(bucketName, pdfKey, file.getInputStream(), pdfMeta);
-	    String pdfUrl = s3.getUrl(bucketName, pdfKey).toString();
-	    saved.setPdfUrl(pdfUrl);
-
-	    // 3️⃣ Generate Thumbnail
-	    BufferedImage thumb = PdfThumbnailGenerator.generateThumbnail(file.getInputStream());
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    ImageIO.write(thumb, "jpg", baos);
-	    byte[] imageBytes = baos.toByteArray();
-
-	    // 4️⃣ Upload Thumbnail to S3
-	    String imageKey = "thumbnails/" + saved.getBookId() + ".jpg";
-	    ObjectMetadata imgMeta = new ObjectMetadata();
-	    imgMeta.setContentLength(imageBytes.length);
-	    imgMeta.setContentType("image/jpeg");
-
-	    s3.putObject(bucketName, imageKey, new ByteArrayInputStream(imageBytes), imgMeta);
-	    String imageUrl = s3.getUrl(bucketName, imageKey).toString();
-
-	    saved.setCoverUrl(imageUrl);
-
-	    // 5️⃣ Save updated URLs
-	    bookRepo.save(saved);
-
-	    return "redirect:/available_books";
-	}
-*/	
-	@PostMapping("/SaveBook")
 	public String addBookBulk(
 	        @RequestParam("category") String category,
 	        @RequestParam("files") MultipartFile[] files) throws Exception {
@@ -275,7 +209,55 @@ public class BookController {
 	    }
 
 	    return "redirect:/available_books";
+	}*/
+	
+	
+	@PostMapping("/SaveBook")
+	public String addBookBulk(
+	        @RequestParam("category") String category,
+	        @RequestParam("files") MultipartFile[] files) throws Exception {
+
+	    for (MultipartFile file : files) {
+
+	        // 🔥 READ ONCE
+	        byte[] pdfBytes = file.getBytes();
+
+	        BookEntity book = new BookEntity();
+	        book.setBookName(file.getOriginalFilename());
+	        book.setCategory(category);
+
+	        // 1️⃣ Save book to get ID
+	        BookEntity saved = bookRepo.save(book);
+
+	        // 2️⃣ Upload PDF to S3
+	        String pdfKey =
+	                "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
+
+	        ObjectMetadata pdfMeta = new ObjectMetadata();
+	        pdfMeta.setContentLength(pdfBytes.length);
+	        pdfMeta.setContentType("application/pdf");
+
+	        s3.putObject(bucketName, pdfKey,
+	                new ByteArrayInputStream(pdfBytes), pdfMeta);
+
+	        String pdfUrl = s3.getUrl(bucketName, pdfKey).toString();
+	        saved.setPdfUrl(pdfUrl);
+
+	        // 3️⃣ Generate thumbnail (SAFE & FINAL WAY)
+	        String coverUrl =
+	                thumbnailService.createCoverFromPdfBytes(
+	                        pdfBytes,
+	                        saved.getBookId() + "-" + file.getOriginalFilename()
+	                );
+
+	        // 4️⃣ Save cover URL
+	        saved.setCoverUrl(coverUrl);
+	        bookRepo.save(saved);
+	    }
+
+	    return "redirect:/available_books";
 	}
+
 
 
 

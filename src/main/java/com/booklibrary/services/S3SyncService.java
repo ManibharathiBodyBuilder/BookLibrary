@@ -89,7 +89,7 @@ public class S3SyncService {
             }
 
             String coverUrl = null;
-            try {
+            /*try {
                 if (thumbnailEnabled) {
                     coverUrl =
                             thumbnailService.createCoverFromPdfBytes(
@@ -98,7 +98,7 @@ public class S3SyncService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+*/
             // 🔥 CREATE OR UPDATE BOOK
             if (book == null) {
                 book = new BookEntity();
