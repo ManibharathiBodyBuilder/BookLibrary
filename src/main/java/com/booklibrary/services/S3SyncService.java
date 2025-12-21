@@ -1,12 +1,18 @@
 package com.booklibrary.services;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
-import com.booklibrary.entity.BookEntity;
-import com.booklibrary.repository.BookRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.booklibrary.entity.BookEntity;
+import com.booklibrary.repository.BookRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,9 +20,14 @@ import java.io.IOException;
 @Service
 public class S3SyncService {
 
-    private final AmazonS3 amazonS3;
-    private final BookRepository bookRepo;
-    private final ThumbnailService thumbnailService;
+    @Autowired
+    private AmazonS3 amazonS3;
+
+    @Autowired
+    private BookRepository bookRepo;
+
+    @Autowired
+    private ThumbnailService thumbnailService;
 
     @Value("${app.aws.bucket-name}")
     private String bucketName;
@@ -24,25 +35,20 @@ public class S3SyncService {
     @Value("${app.aws.books-folder}")
     private String booksFolder;
 
-    @Value("${app.sync.enabled:false}")
+    // 🔥 CONTROL SWITCH (LIVE SAFE)
+    @Value("${app.sync.enabled:true}")
     private boolean syncEnabled;
 
-    @Value("${thumbnail.enabled:false}")
+    // 🔥 CONTROL THUMBNAILS
+    @Value("${thumbnail.enabled:true}")
     private boolean thumbnailEnabled;
 
-    public S3SyncService(AmazonS3 amazonS3,
-                         BookRepository bookRepo,
-                         ThumbnailService thumbnailService) {
-        this.amazonS3 = amazonS3;
-        this.bookRepo = bookRepo;
-        this.thumbnailService = thumbnailService;
-    }
-
-    @Scheduled(cron = "*/30 * * * * *")
+    // ⏱️ RUN EVERY 5 MIN (NOT 30 SEC)
+    @Scheduled(fixedDelay = 5 * 60 * 1000)
     public void syncBooksFromS3() {
 
         if (!syncEnabled) {
-            return; // 🔒 LIVE SAFE
+            return;
         }
 
         System.out.println("🔄 Syncing S3 Books...");
@@ -58,56 +64,79 @@ public class S3SyncService {
             String fileName =
                     key.substring(key.lastIndexOf("/") + 1);
 
-            if (bookRepo.existsByFileName(fileName)) continue;
+            // 🔥 FIND EXISTING BOOK (IF ANY)
+            BookEntity book =
+                    bookRepo.findByFileName(fileName).orElse(null);
+
+            // ✅ IF BOOK EXISTS & COVER ALREADY PRESENT → SKIP
+            if (book != null && book.getCoverUrl() != null) {
+                continue;
+            }
+
+            System.out.println("📘 Processing: " + fileName);
 
             byte[] pdfBytes;
-
             try (S3Object s3Object =
                          amazonS3.getObject(bucketName, key);
                  S3ObjectInputStream input =
                          s3Object.getObjectContent()) {
 
                 pdfBytes = toByteArray(input);
+
             } catch (Exception e) {
                 e.printStackTrace();
-                return;
+                continue;
             }
 
             String coverUrl = null;
             try {
                 if (thumbnailEnabled) {
                     coverUrl =
-                        thumbnailService.createCoverFromPdfBytes(pdfBytes, fileName);
+                            thumbnailService.createCoverFromPdfBytes(
+                                    pdfBytes, fileName);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            BookEntity book = new BookEntity();
-            book.setBookName(fileName.replace(".pdf", ""));
-            book.setFileName(fileName);
-            book.setCategory("Computer books"); // ✅ FIX
-            book.setPdfUrl("https://" + bucketName +
-                    ".s3.ap-south-1.amazonaws.com/" + key);
-            book.setCoverUrl(coverUrl);
+            // 🔥 CREATE OR UPDATE BOOK
+            if (book == null) {
+                book = new BookEntity();
+                book.setBookName(fileName.replace(".pdf", ""));
+                book.setFileName(fileName);
+                book.setCategory("Computer books");
+                book.setPdfUrl(
+                        "https://" + bucketName +
+                        ".s3.ap-south-1.amazonaws.com/" + key
+                );
+            }
 
+            book.setCoverUrl(coverUrl);
             bookRepo.save(book);
 
-            System.out.println("✅ Inserted: " + fileName);
+            System.out.println("✅ Saved / Updated: " + fileName);
 
-            break; // 🔥 ONLY ONE PDF PER RUN
+            // 🔥 ONE FILE PER RUN (LIVE SAFE)
+            break;
         }
 
         System.out.println("🎉 Sync Completed");
     }
 
-    private byte[] toByteArray(S3ObjectInputStream input) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    // ================= HELPER =================
+    private byte[] toByteArray(S3ObjectInputStream input)
+            throws IOException {
+
+        ByteArrayOutputStream buffer =
+                new ByteArrayOutputStream();
+
         byte[] data = new byte[4096];
         int n;
+
         while ((n = input.read(data)) != -1) {
             buffer.write(data, 0, n);
         }
         return buffer.toByteArray();
     }
 }
+

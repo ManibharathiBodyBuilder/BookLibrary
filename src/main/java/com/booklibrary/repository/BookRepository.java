@@ -2,6 +2,7 @@ package com.booklibrary.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,9 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
 	boolean existsByFileName(String fileName);
 	
 	List<BookEntity> findByCategory(String category);
+	
+
+	    Optional<BookEntity> findByFileName(String fileName);
 
 
 	
