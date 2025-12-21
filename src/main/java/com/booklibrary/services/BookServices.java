@@ -2,6 +2,11 @@ package com.booklibrary.services;
 
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +59,28 @@ public class BookServices {
 
          return bookRepository.findAll(spec);
      }
+
+     
+
+         public byte[] downloadPdf(String pdfUrl) throws IOException {
+
+             URL url = new URL(pdfUrl);
+             URLConnection connection = url.openConnection();
+             connection.setConnectTimeout(5000);
+             connection.setReadTimeout(5000);
+
+             try (InputStream in = connection.getInputStream();
+                  ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+
+                 byte[] data = new byte[4096];
+                 int n;
+                 while ((n = in.read(data)) != -1) {
+                     buffer.write(data, 0, n);
+                 }
+                 return buffer.toByteArray();
+             }
+         }
+     
 
 
 	

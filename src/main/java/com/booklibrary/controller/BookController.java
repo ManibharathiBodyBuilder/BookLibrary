@@ -337,6 +337,34 @@ public class BookController {
 
 	    return buffer.toByteArray();
 	}
+	
+	//FIX OLD BOOKS (IMPORTANT 🔥)
+	
+	@GetMapping("/admin/generate-old-covers")
+	public String generateOldCovers() throws Exception {
+
+	    List<BookEntity> books =
+	        bookRepo.findByCoverUrl("PENDING");
+
+	    for (BookEntity book : books) {
+
+	    	byte[] pdfBytes =
+	    			bookServices.downloadPdf(book.getPdfUrl());
+
+
+	        String coverUrl =
+	            thumbnailService.createCoverFromPdfBytes(
+	                pdfBytes, book.getFileName());
+
+	        book.setCoverUrl(coverUrl);
+	        bookRepo.save(book);
+
+	        Thread.sleep(2000); // LIVE SAFE
+	    }
+
+	    return "DONE";
+	}
+
 
 
 

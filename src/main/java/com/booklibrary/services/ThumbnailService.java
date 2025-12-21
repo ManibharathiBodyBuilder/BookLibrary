@@ -27,7 +27,7 @@ public class ThumbnailService {
     @Value("${app.aws.covers-folder:covers/}")
     private String coversFolder;
 
-    @Value("${app.covers.width:300}")
+    @Value("${app.covers.width:220}")
     private int coverWidth; // Keep thumbnail small
 
     public ThumbnailService(AmazonS3 amazonS3) {
@@ -47,7 +47,9 @@ public class ThumbnailService {
             
             System.out.println(">>> THUMBNAIL DPI TEST START");
 
-            BufferedImage pageImage = renderer.renderImageWithDPI(0, 200);
+            BufferedImage pageImage =
+            	    renderer.renderImageWithDPI(0, 96, ImageType.RGB);
+
 
             // QUALITY CHECK
             if (pageImage.getWidth() < 800) {

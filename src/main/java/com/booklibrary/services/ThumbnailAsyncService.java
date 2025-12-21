@@ -1,6 +1,5 @@
 package com.booklibrary.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -24,20 +23,24 @@ public class ThumbnailAsyncService {
             String fileName) {
 
         try {
+            // 🔥 Generate thumbnail
             String coverUrl =
-                thumbnailService.createCoverFromPdfBytes(pdfBytes, fileName);
+                thumbnailService.createCoverFromPdfBytes(
+                        pdfBytes, fileName);
 
-            BookEntity book =
-                bookRepo.findById(bookId).orElse(null);
-
-            if (book != null) {
-                book.setCoverUrl(coverUrl);
-                bookRepo.save(book);
+            BookEntity book = bookRepo.findById(bookId).orElse(null);
+            if (book == null) {
+                return;
             }
+
+
+            book.setCoverUrl(coverUrl);
+            bookRepo.save(book);
+
+            System.out.println("✅ Thumbnail done for bookId = " + bookId);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
