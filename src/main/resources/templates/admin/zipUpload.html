@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ZIP Bulk Upload</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h3>📦 Bulk Book Upload (ZIP)</h3>
+
+    <form th:action="@{/admin/upload-zip}"
+          method="post"
+          enctype="multipart/form-data"
+          class="mt-4">
+
+        <div class="mb-3">
+            <label class="form-label">Select Category</label>
+            <select name="category" class="form-select" required>
+                <option value="">-- Select --</option>
+                <option value="Computer books">Computer books</option>
+                <option value="Tamil books">Tamil books</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Upload ZIP File</label>
+            <input type="file"
+                   name="zipFile"
+                   accept=".zip"
+                   class="form-control"
+                   required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Upload ZIP
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

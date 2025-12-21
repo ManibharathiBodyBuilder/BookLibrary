@@ -4,9 +4,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 
@@ -253,6 +256,88 @@ public class BookController {
 
 	    return "redirect:/available_books";
 	}
+	
+	
+	@GetMapping("/admin/zip-upload")
+	public String showZipUploadPage() {
+	    return "admin/zipUpload";
+	}
+
+	
+	
+	@PostMapping("/admin/upload-zip")
+	public String uploadZipBooks(
+	        @RequestParam("category") String category,
+	        @RequestParam("zipFile") MultipartFile zipFile) throws Exception {
+
+	    ZipInputStream zis =
+	            new ZipInputStream(zipFile.getInputStream());
+
+	    ZipEntry entry;
+
+	    while ((entry = zis.getNextEntry()) != null) {
+
+	        if (!entry.getName().endsWith(".pdf")) continue;
+
+	        byte[] pdfBytes = readZipEntryBytes(zis);
+
+
+	        // 🔥 CREATE BOOK
+	        BookEntity book = new BookEntity();
+	        book.setBookName(entry.getName().replace(".pdf", ""));
+	        book.setCategory(category);
+
+	        BookEntity saved = bookRepo.save(book);
+
+	        // 🔥 PDF → S3
+	        String pdfKey =
+	            "books/" + saved.getBookId() + "-" + entry.getName();
+
+	        ObjectMetadata meta = new ObjectMetadata();
+	        meta.setContentLength(pdfBytes.length);
+	        meta.setContentType("application/pdf");
+
+	        s3.putObject(bucketName,
+	                pdfKey,
+	                new ByteArrayInputStream(pdfBytes),
+	                meta);
+
+	        saved.setPdfUrl(
+	            s3.getUrl(bucketName, pdfKey).toString());
+
+	        // 🔥 TEMP COVER
+	        saved.setCoverUrl("PENDING");
+	        bookRepo.save(saved);
+
+	        // 🔥 ASYNC THUMBNAIL
+	        thumbnailAsyncService.generateThumbnailAsync(
+	                saved.getBookId(),
+	                pdfBytes,
+	                saved.getBookId() + "-" + entry.getName()
+	        );
+
+	        // 🔥 SAFETY GAP
+	        Thread.sleep(500);
+	    }
+
+	    zis.close();
+	    return "redirect:/available_books";
+	}
+
+	
+	private byte[] readZipEntryBytes(ZipInputStream zis) throws IOException {
+
+	    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	    byte[] data = new byte[4096];
+	    int n;
+
+	    while ((n = zis.read(data)) != -1) {
+	        buffer.write(data, 0, n);
+	    }
+
+	    return buffer.toByteArray();
+	}
+
 
 
 
