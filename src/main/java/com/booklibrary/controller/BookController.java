@@ -39,6 +39,7 @@ import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
 //import com.booklibrary.services.FileServices;  --------Is it for file_Repository Doc!!!
 import com.booklibrary.services.MyBookServices;
+import com.booklibrary.services.ThumbnailAsyncService;
 import com.booklibrary.services.ThumbnailService;
 import com.booklibrary.utils.PdfThumbnailGenerator;
 
@@ -68,6 +69,9 @@ public class BookController {
 	
 	@Autowired
 	private ThumbnailService thumbnailService;
+	
+	@Autowired
+	private ThumbnailAsyncService thumbnailAsyncService;
 
 
 	
@@ -219,40 +223,32 @@ public class BookController {
 
 	    for (MultipartFile file : files) {
 
-	        // 🔥 READ ONCE
 	        byte[] pdfBytes = file.getBytes();
 
 	        BookEntity book = new BookEntity();
 	        book.setBookName(file.getOriginalFilename());
 	        book.setCategory(category);
 
-	        // 1️⃣ Save book to get ID
 	        BookEntity saved = bookRepo.save(book);
 
-	        // 2️⃣ Upload PDF to S3
-	        String pdfKey =
-	                "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
-
-	        ObjectMetadata pdfMeta = new ObjectMetadata();
-	        pdfMeta.setContentLength(pdfBytes.length);
-	        pdfMeta.setContentType("application/pdf");
-
+	        // PDF upload
+	        String pdfKey = "books/" + saved.getBookId() + "-" + file.getOriginalFilename();
 	        s3.putObject(bucketName, pdfKey,
-	                new ByteArrayInputStream(pdfBytes), pdfMeta);
+	                new ByteArrayInputStream(pdfBytes),
+	                new ObjectMetadata());
 
-	        String pdfUrl = s3.getUrl(bucketName, pdfKey).toString();
-	        saved.setPdfUrl(pdfUrl);
+	        saved.setPdfUrl(s3.getUrl(bucketName, pdfKey).toString());
 
-	        // 3️⃣ Generate thumbnail (SAFE & FINAL WAY)
-	        String coverUrl =
-	                thumbnailService.createCoverFromPdfBytes(
-	                        pdfBytes,
-	                        saved.getBookId() + "-" + file.getOriginalFilename()
-	                );
-
-	        // 4️⃣ Save cover URL
-	        saved.setCoverUrl(coverUrl);
+	        // 🔥 MARK THUMBNAIL PENDING
+	        saved.setCoverUrl("PENDING"); 
 	        bookRepo.save(saved);
+
+	        // 🔥 SEND TO BACKGROUND THREAD
+	        thumbnailAsyncService.generateThumbnailAsync(
+	                saved.getBookId(),
+	                pdfBytes,
+	                saved.getBookId() + "-" + file.getOriginalFilename()
+	        );
 	    }
 
 	    return "redirect:/available_books";
