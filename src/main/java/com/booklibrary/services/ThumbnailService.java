@@ -44,10 +44,14 @@ public class ThumbnailService {
 
             PDFRenderer renderer = new PDFRenderer(document);
 
-            // LOW MEMORY render
-            BufferedImage pageImage = renderer.renderImage(0, 0.10f); 
- // 40 DPI only!!
+            System.out.println(">>> THUMBNAIL DPI TEST START");
 
+            BufferedImage pageImage = renderer.renderImageWithDPI(0, 200);
+
+            // QUALITY CHECK
+            if (pageImage.getWidth() < 800) {
+                return getDefaultCoverUrl();
+            }
             // Resize Thumbnail
             int newW = coverWidth;
             int newH = (pageImage.getHeight() * newW) / pageImage.getWidth();
@@ -72,5 +76,10 @@ public class ThumbnailService {
 
             return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + s3Key;
         }
+    }
+    private String getDefaultCoverUrl() {
+        return "https://" + bucketName
+                + ".s3." + region
+                + ".amazonaws.com/default/book-cover.jpg";
     }
 }
