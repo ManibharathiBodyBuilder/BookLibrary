@@ -50,11 +50,9 @@
         <div class="col-md-3 col-sm-6 mb-4" th:each="b : ${books}">
             <div class="card shadow-sm text-center">
 
-                <!-- Cover image -->
-                <img th:src="${b.coverUrl != null ? b.coverUrl : '/image/pdf.jpg'}"
-                     class="card-img-top"
-                     style="height: 250px; object-fit: contain; padding: 10px; background:white;" />
-
+              <img th:src="${b.coverUrl != null ? b.coverUrl : '/image/pdf.jpg'}"
+  			   class="card-img-top book-cover" />
+  			   
                 <div class="card-body">
 
                     <!-- Book Name -->
