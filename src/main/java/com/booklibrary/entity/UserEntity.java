@@ -19,7 +19,17 @@ public class UserEntity {
     @Column(nullable = false)
     private String role;
     
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    
   
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	@Column(nullable = false)
     private LocalDateTime createdAt;
 	
@@ -56,14 +66,16 @@ public class UserEntity {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public UserEntity(Long id, String email, String password, String fullName, boolean enabled) {
-		super();
+
+	public UserEntity(Long id, String username, String email, String password, String fullName, boolean enabled) {
 		this.id = id;
+		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.fullName = fullName;
 		this.enabled = enabled;
 	}
+
 	@Column(unique=true, nullable=false)
     private String email;
 

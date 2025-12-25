@@ -256,6 +256,7 @@ public class BookController {
 
 	    return "redirect:/available_books";
 	}
+
 	
 	
 	@GetMapping("/admin/zip-upload")
@@ -374,6 +375,7 @@ public class BookController {
 
 
 
+
 	//----------Is it for file_Repository Doc!!!
 	/*@PostMapping("/ProcessUpload")
 	public String  ProcessUpload(@RequestParam MultipartFile file,Model model)throws IOException
@@ -402,7 +404,7 @@ public class BookController {
 */
 	@GetMapping("/my_book")
 	public String GetAllMyBook(Model model) {
-	    List<MyBookEntity> list1 = myBookServices.GetAllMyBook();
+	    List<MyBookEntity> list1 = myBookServices.getMyBooksByUser(user)
 
 	    model.addAttribute("books", list1);   // FIXED
 	    return "mybook";

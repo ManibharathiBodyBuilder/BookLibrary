@@ -6,13 +6,16 @@ import javax.management.relation.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -33,7 +36,8 @@ public class SecurityConfiguration {
 	            .antMatchers("/login","/register","/forgot-password","/reset-password").permitAll()
 	            .antMatchers("/readbook/**","/readbookpage/**").permitAll()
 	            .antMatchers("/h2-console/**").permitAll()
-	            .antMatchers("/testing").permitAll()    
+	            .antMatchers("/testing").permitAll()   
+	            .antMatchers("/mylist/**", "/my_book/**").authenticated()
 	            .antMatchers("/deletebook/**").authenticated()
 	            .antMatchers(HttpMethod.GET, "/book_register").hasRole("ADMIN")
 	            .anyRequest().authenticated()   // 🔥 MUST BE authenticated, not permitAll
@@ -78,27 +82,69 @@ public class SecurityConfiguration {
 	}*/
 	
 	@Bean
-	public org.springframework.security.core.userdetails.UserDetailsService UserDetailsService(BCryptPasswordEncoder encoder) {
-		UserDetails admin = User.withUsername("Manibharathi").password(encoder.encode("787898")).roles("ADMIN").build();
-		UserDetails user = User.withUsername("demoUser").password(encoder.encode("demo@2025")).roles("USER").build();
-		return new InMemoryUserDetailsManager(user, admin);
-		
-	//	return new CustomUserDetailsService();
+	public AuthenticationProvider inMemoryAuthProvider(
+			PasswordEncoder encoder) {
 
+	    UserDetails admin = User.withUsername("Manibharathi")
+	            .password(encoder.encode("787898"))
+	            .roles("ADMIN")
+	            .build();
+
+	    UserDetails demo = User.withUsername("demoUser")
+	            .password(encoder.encode("demo@2025"))
+	            .roles("USER")
+	            .build();
+
+	    InMemoryUserDetailsManager manager =
+	            new InMemoryUserDetailsManager(admin, demo);
+
+	    DaoAuthenticationProvider provider =
+	            new DaoAuthenticationProvider();
+	    provider.setUserDetailsService(manager);
+	    provider.setPasswordEncoder(encoder);
+
+	    return provider;
 	}
-	
-/*	@Bean
-	public DaoAuthenticationProvider AuthenticationProvider() {
-		DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-		daoProvider.setUserDetailsService(UserDetailsService());
-		daoProvider.setPasswordEncoder(passwordEncoder());
-		return daoProvider;
-	}*/
+
 	
 	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	public AuthenticationManager authenticationManager(
+	        HttpSecurity http,
+	        AuthenticationProvider inMemoryAuthProvider
+	      //  AuthenticationProvider dbAuthProvider
+	) throws Exception {
+
+	    AuthenticationManagerBuilder builder =
+	            http.getSharedObject(AuthenticationManagerBuilder.class);
+
+	    builder.authenticationProvider(inMemoryAuthProvider); // FIRST
+	   // builder.authenticationProvider(dbAuthProvider);       // SECOND
+
+	    return builder.build();
 	}
+
+
+	
+	/*@Bean
+	public AuthenticationProvider dbAuthProvider(
+	        CustomUserDetailsService customUserDetailsService,
+	        PasswordEncoder encoder) {
+
+	    DaoAuthenticationProvider provider =
+	            new DaoAuthenticationProvider();
+	    provider.setUserDetailsService(customUserDetailsService);
+	    provider.setPasswordEncoder(encoder);
+
+	    return provider;
+	}
+	*/
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+	    return new BCryptPasswordEncoder();
+	}
+
+
+
 	 
 	
 	
