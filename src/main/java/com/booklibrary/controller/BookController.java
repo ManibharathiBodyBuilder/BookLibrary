@@ -20,8 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +37,6 @@ import com.booklibrary.dto.CategoryDTO;
 import com.booklibrary.entity.BookEntity;
 //import com.booklibrary.entity.FileModel; -------Is it for file_Repository Doc!!!
 import com.booklibrary.entity.MyBookEntity;
-import com.booklibrary.entity.UserEntity;
 import com.booklibrary.repository.BookRepository;
 import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
@@ -405,31 +402,13 @@ public class BookController {
 	}
 	---------------Is it for file_Repository Doc!!!
 */
-	
-	
 	@GetMapping("/my_book")
-	public String getAllMyBook(Model model) {
+	public String GetAllMyBook(Model model) {
+	    List<MyBookEntity> list1 = myBookServices.getMyBooksByUser(user)
 
-	    Authentication auth =
-	            SecurityContextHolder.getContext().getAuthentication();
-
-	    if (auth == null || auth.getName().equals("anonymousUser")) {
-	        return "redirect:/login";
-	    }
-
-	    String username = auth.getName();
-
-	    UserEntity user = bookRepo
-	            .findByUsername(username)
-	            .orElseThrow(() -> new RuntimeException("User not found"));
-
-	    List<MyBookEntity> list1 =
-	            myBookServices.getMyBooksByUser(user);   // ✅ semicolon FIXED
-
-	    model.addAttribute("books", list1);
+	    model.addAttribute("books", list1);   // FIXED
 	    return "mybook";
 	}
-
 
 
 

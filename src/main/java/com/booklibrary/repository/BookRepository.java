@@ -13,7 +13,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.booklibrary.entity.BookEntity;
-import com.booklibrary.entity.UserEntity;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpecificationExecutor<BookEntity> {
@@ -25,8 +24,6 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
 	
 
 	    Optional<BookEntity> findByFileName(String fileName);
-	    
-	    Optional<UserEntity> findByUsername(String username);
 	    
 	    
 	    
