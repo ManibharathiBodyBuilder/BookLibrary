@@ -20,6 +20,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,9 @@ import com.booklibrary.dto.CategoryDTO;
 import com.booklibrary.entity.BookEntity;
 //import com.booklibrary.entity.FileModel; -------Is it for file_Repository Doc!!!
 import com.booklibrary.entity.MyBookEntity;
+import com.booklibrary.entity.UserEntity;
 import com.booklibrary.repository.BookRepository;
+import com.booklibrary.repository.UserRepository;
 import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
 //import com.booklibrary.services.FileServices;  --------Is it for file_Repository Doc!!!
@@ -58,6 +62,9 @@ public class BookController {
 	
 	@Autowired
 	private BookRepository bookRepo;
+	
+	@Autowired
+	private UserRepository userRepo;
 	
 	
 	@Autowired
@@ -404,28 +411,57 @@ public class BookController {
 */
 	@GetMapping("/my_book")
 	public String GetAllMyBook(Model model) {
-	    List<MyBookEntity> list1 = myBookServices.getMyBooksByUser(user)
 
-	    model.addAttribute("books", list1);   // FIXED
+	    Authentication auth =
+	        SecurityContextHolder.getContext().getAuthentication();
+
+	    if (auth == null || auth.getName().equals("anonymousUser")) {
+	        return "redirect:/login";
+	    }
+
+	    String username = auth.getName();
+
+	    UserEntity user = bookRepo
+	            .findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<MyBookEntity> list1 =
+	            myBookServices.getMyBooksByUser(user);
+
+	    model.addAttribute("books", list1);
 	    return "mybook";
 	}
 
 
 
-	@RequestMapping("/mylist/{BookId}")
-	public String GetId(@PathVariable("BookId") Long bookId) {
 
-	    BookEntity bookEntity = bookServices.findBydata(bookId);
+	@RequestMapping("/mylist/{bookId}")
+	public String addToMyBook(@PathVariable Long bookId) {
 
-	    MyBookEntity mbe = new MyBookEntity();  // don't set ID!
-	    mbe.setBookName(bookEntity.getBookName());
+	    // 1️⃣ get logged-in user
+	    Authentication auth =
+	            SecurityContextHolder.getContext().getAuthentication();
+	    String email = auth.getName();
 
-	    myBookServices.saveMyBook(mbe);
+	    UserEntity user = userRepo.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    // 2️⃣ get book
+	    BookEntity book = bookServices.findBydata(bookId);
+
+	    // 3️⃣ save user-wise mybook
+	    MyBookEntity myBook = new MyBookEntity();
+	    myBook.setUser(user);                 // 🔥 IMPORTANT
+	    myBook.setBookId(book.getBookId());
+	    myBook.setBookName(book.getBookName());
+
+	    myBookServices.saveMyBook(myBook);
 
 	    historyservice.addToMyBook(bookId.intValue());
 
 	    return "redirect:/my_book";
 	}
+
 
 
 

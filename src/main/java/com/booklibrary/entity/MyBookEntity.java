@@ -38,7 +38,6 @@ public class MyBookEntity {
     }
 
 	
-	
 	public Long getId() {
 		return id;
 	}
@@ -51,6 +50,9 @@ public class MyBookEntity {
 	public void setUser(UserEntity user) {
 		this.user = user;
 	}
+	
+	
+
 	public Long getBookId() {
 		return bookId;
 	}
@@ -63,11 +65,13 @@ public class MyBookEntity {
 	public void setBookName(String bookName) {
 		this.bookName = bookName;
 	}
-	public MyBookEntity(Long bookId, String bookName) {
-		super();
-		this.bookId = bookId;
-		this.bookName = bookName;
-	}
+	public MyBookEntity(UserEntity user, Long bookId, String bookName) {
+        this.user = user;
+        this.bookId = bookId;
+        this.bookName = bookName;
+    }
+	
+	
 	public MyBookEntity() {
 		super();
 		// TODO Auto-generated constructor stub
