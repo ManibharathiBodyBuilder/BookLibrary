@@ -1,4 +1,4 @@
-package com.booklibrary.services;
+/*package com.booklibrary.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -44,3 +44,4 @@ public class ThumbnailAsyncService {
         }
     }
 }
+*/

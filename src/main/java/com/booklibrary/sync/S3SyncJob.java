@@ -1,4 +1,4 @@
-package com.booklibrary.sync;
+/*package com.booklibrary.sync;
 
 import com.booklibrary.entity.BookEntity;
 import com.booklibrary.repository.BookRepository;
@@ -115,3 +115,4 @@ public class S3SyncJob {
     }
 
 }
+*/
