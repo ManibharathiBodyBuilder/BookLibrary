@@ -421,7 +421,7 @@ public class BookController {
 
 	    String username = auth.getName();
 
-	    UserEntity user = bookRepo
+	    UserEntity user = userRepo
 	            .findByUsername(username)
 	            .orElseThrow(() -> new RuntimeException("User not found"));
 

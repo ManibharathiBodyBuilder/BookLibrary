@@ -26,7 +26,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
 
 	    Optional<BookEntity> findByFileName(String fileName);
 	    
-	    Optional<UserEntity> findByUsername(String username);
+	  //  Optional<UserEntity> findByUsername(String username);
 	    
 	   // bulk zip issue
 	    List<BookEntity> findByCoverUrlIsNull();
