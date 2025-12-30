@@ -46,7 +46,6 @@ import com.booklibrary.services.BookHistoryService;
 import com.booklibrary.services.BookServices;
 //import com.booklibrary.services.FileServices;  --------Is it for file_Repository Doc!!!
 import com.booklibrary.services.MyBookServices;
-import com.booklibrary.services.ThumbnailAsyncService;
 import com.booklibrary.services.ThumbnailService;
 import com.booklibrary.utils.PdfThumbnailGenerator;
 
@@ -80,8 +79,7 @@ public class BookController {
 	@Autowired
 	private ThumbnailService thumbnailService;
 	
-	@Autowired
-	private ThumbnailAsyncService thumbnailAsyncService;
+
 
 
 	
@@ -254,11 +252,22 @@ public class BookController {
 	        bookRepo.save(saved);
 
 	        // 🔥 SEND TO BACKGROUND THREAD
-	        thumbnailAsyncService.generateThumbnailAsync(
+	       /* thumbnailService.generateThumbnailAsync(
 	                saved.getBookId(),
 	                pdfBytes,
 	                saved.getBookId() + "-" + file.getOriginalFilename()
-	        );
+	        );*/
+	        
+	     // 🔥 GENERATE THUMBNAIL (SYNC)
+	        String coverUrl =
+	                thumbnailService.createCoverFromPdfBytes(
+	                        pdfBytes,
+	                        saved.getBookId() + "-" + file.getOriginalFilename()
+	                );
+
+	        saved.setCoverUrl(coverUrl);
+	        bookRepo.save(saved);
+
 	    }
 
 	    return "redirect:/available_books";
@@ -317,12 +326,30 @@ public class BookController {
 	        saved.setCoverUrl("PENDING");
 	        bookRepo.save(saved);
 
-	        // 🔥 ASYNC THUMBNAIL
-	        thumbnailAsyncService.generateThumbnailAsync(
+	       /* // 🔥 ASYNC THUMBNAIL
+	        thumbnailService.generateThumbnailAsync(
 	                saved.getBookId(),
 	                pdfBytes,
 	                saved.getBookId() + "-" + entry.getName()
-	        );
+	        );*/
+	        
+
+	     // 🔥 GENERATE THUMBNAIL (SYNC)
+	        try {
+	            String coverUrl =
+	                    thumbnailService.createCoverFromPdfBytes(
+	                            pdfBytes,
+	                            saved.getBookId() + "-" + zipFile.getOriginalFilename()
+	                    );
+
+	            saved.setCoverUrl(coverUrl);
+	        } catch (Exception e) {
+	            // fallback
+	            saved.setCoverUrl("PENDING"); // or default cover URL
+	        }
+	        bookRepo.save(saved);
+
+
 
 	        // 🔥 SAFETY GAP
 	        Thread.sleep(500);
